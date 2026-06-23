@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATEC ADS — Simulado Completo</title>
+<style>
+:root{
+  --navy:#0a1628;--blue:#1a4aff;--blue2:#3a6aff;--bluek:#e8eeff;
+  --gold:#f5a623;--gold2:#fff3d6;
+  --green:#00c97a;--greenl:#e0fff2;
+  --red:#e8333a;--redl:#ffeaea;
+  --warn:#e07b00;--warnl:#fff4e0;
+  --bg:#f0f2f7;--card:#fff;--ink:#0a1628;--muted:#5a6380;--line:#dde1ea;
+  --r:14px;--sh:0 2px 14px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink)}
+.screen{display:none;min-height:100vh;padding:20px 16px 80px;animation:fi .2s ease}
+.screen.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.inner{max-width:600px;margin:0 auto}
+
+/* HOME */
+.home{display:none;min-height:100vh;padding:24px 16px 60px}
+.home.on{display:block}
+.home-inner{max-width:600px;margin:0 auto}
+.home-top{text-align:center;padding-top:16px;margin-bottom:28px}
+.home-badge{font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:900;color:var(--gold);background:var(--navy);padding:5px 14px;border-radius:99px;display:inline-block;margin-bottom:14px}
+.home-title{font-size:30px;font-weight:900;letter-spacing:-1px;line-height:1.1;color:var(--navy);margin-bottom:6px}
+.home-title span{color:var(--blue)}
+.home-sub{font-size:14px;color:var(--muted);line-height:1.5}
+.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.18em;font-weight:800;color:var(--muted);margin:20px 0 10px;padding-left:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.scard{border-radius:12px;padding:14px 12px;cursor:pointer;transition:transform .14s,box-shadow .14s;border:2px solid transparent;text-align:center;position:relative}
+.scard:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.13)}
+.scard:active{transform:scale(.98)}
+.scard-ico{font-size:26px;margin-bottom:6px}
+.scard-name{font-size:13px;font-weight:800;line-height:1.2}
+.scard-desc{font-size:10px;opacity:.7;margin-top:3px;line-height:1.3}
+.weight-tag{font-size:9px;font-weight:900;padding:2px 7px;border-radius:5px;margin-top:6px;display:inline-block}
+
+/* color themes per subject */
+.c-mat{background:var(--navy);border-color:var(--blue2);color:#fff}
+.c-mat .weight-tag{background:var(--blue);color:#fff}
+.c-log{background:#1a0a2e;border-color:var(--gold);color:#fff}
+.c-log .weight-tag{background:var(--gold);color:var(--navy)}
+.c-por{background:#1a3a0a;border-color:#4caf50;color:#fff}
+.c-por .weight-tag{background:#4caf50;color:#fff}
+.c-ing{background:#0a2a3a;border-color:#00bcd4;color:#fff}
+.c-ing .weight-tag{background:#00bcd4;color:#fff}
+.c-fis{background:#2a0a0a;border-color:#f44336;color:#fff}
+.c-fis .weight-tag{background:#f44336;color:#fff}
+.c-qui{background:#1a0a3a;border-color:#9c27b0;color:#fff}
+.c-qui .weight-tag{background:#9c27b0;color:#fff}
+.c-bio{background:#0a2a1a;border-color:#8bc34a;color:#fff}
+.c-bio .weight-tag{background:#8bc34a;color:#fff}
+.c-his{background:#3a2a0a;border-color:#ff9800;color:#fff}
+.c-his .weight-tag{background:#ff9800;color:#fff}
+.c-geo{background:#0a3a2a;border-color:#00bfa5;color:#fff}
+.c-geo .weight-tag{background:#00bfa5;color:#fff}
+.home-note{background:var(--card);border-radius:var(--r);padding:14px 16px;border:1.5px solid var(--line);font-size:13px;color:var(--muted);line-height:1.55;margin-top:12px}
+.home-note strong{color:var(--blue)}
+
+/* QUIZ HEADER */
+.qhdr{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.hbtn{background:none;border:none;cursor:pointer;font-size:22px;padding:4px 8px 4px 0;color:var(--muted);line-height:1}
+.qhdr-info{flex:1;min-width:0}
+.qhdr-name{font-size:10px;text-transform:uppercase;letter-spacing:.15em;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qhdr-meta{font-size:12px;color:var(--muted)}
+.spill{background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:5px 11px;font-size:13px;font-weight:800;white-space:nowrap;flex:none}
+.pgrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pgbar{flex:1;height:5px;background:var(--line);border-radius:99px;overflow:hidden}
+.pgfill{height:100%;border-radius:99px;transition:width .3s}
+.pglbl{font-size:11px;color:var(--muted);white-space:nowrap}
+.dotrow{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:14px}
+.d{width:9px;height:9px;border-radius:50%;background:var(--line);cursor:pointer;flex:none;transition:background .12s,transform .1s}
+.d.ok{background:var(--green)}
+.d.wrong{background:var(--red)}
+.d.cur{transform:scale(1.5)}
+.qcard{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--sh);margin-bottom:10px}
+.qtag{font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--muted);margin-bottom:8px}
+.qn{font-weight:900}
+.qtext{font-size:16px;font-weight:600;line-height:1.55}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;margin-top:8px;cursor:pointer;font-size:14px;line-height:1.4;color:var(--ink);transition:border-color .1s,background .1s;word-break:break-word}
+.opt:disabled{cursor:default}
+.ol{flex:none;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:800;background:var(--bg);border:1.5px solid var(--line);color:var(--muted)}
+.opt.ok{border-color:var(--green)!important;background:var(--greenl)!important}
+.opt.ok .ol{background:var(--green);color:#fff;border-color:var(--green)}
+.opt.err{border-color:var(--red)!important;background:var(--redl)!important}
+.opt.err .ol{background:var(--red);color:#fff;border-color:var(--red)}
+.opt.dim{opacity:.35}
+.fb{border-radius:var(--r);padding:14px;margin-top:10px;border:1.5px solid}
+.fb.ok{background:var(--greenl);border-color:#8ae0c0}
+.fb.err{background:var(--redl);border-color:#f5b0b3}
+.fb-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.fb-ico{font-size:20px;flex:none}
+.fb-v{font-weight:900;font-size:15px}
+.fb.ok .fb-v{color:var(--green)}
+.fb.err .fb-v{color:var(--red)}
+.fb-why{font-size:13px;color:#444;line-height:1.6;margin-top:6px}
+.listbtn{width:100%;background:none;border:1.5px solid var(--line);border-radius:11px;padding:10px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;margin-top:8px}
+.listbtn:hover{background:var(--line)}
+.navrow{display:flex;gap:8px;margin-top:10px}
+.nb{flex:1;border:none;border-radius:11px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;transition:opacity .12s,transform .1s}
+.nb:active{transform:scale(.98)}
+.nb.prev{background:var(--card);border:1.5px solid var(--line);color:var(--ink)}
+.nb:disabled{opacity:.3;cursor:default}
+.foot{text-align:center;font-size:11px;color:var(--muted);margin-top:14px}
+.mov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:flex-end;justify-content:center}
+.mov.on{display:flex}
+.mbox{background:var(--card);border-radius:var(--r) var(--r) 0 0;padding:20px;width:100%;max-width:600px;max-height:70vh;overflow-y:auto}
+.mhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mtit{font-weight:900;font-size:16px}
+.mx{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px}
+.qi{border:1.5px solid var(--line);border-radius:8px;padding:7px 4px;text-align:center;cursor:pointer;font-size:12px;font-weight:700;transition:transform .1s}
+.qi:hover{transform:scale(1.06)}
+.qi.ok{background:var(--greenl);border-color:var(--green);color:var(--green)}
+.qi.wrong{background:var(--redl);border-color:var(--red);color:var(--red)}
+.qi.pend{background:var(--bg);color:var(--muted)}
+.qi.cur{outline:2.5px solid var(--ink)}
+.mclose{width:100%;margin-top:14px;border:none;border-radius:11px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;background:var(--ink);color:#fff}
+/* RESULT */
+.res-hero{border-radius:var(--r);padding:26px 22px;text-align:center;margin-bottom:14px;color:#fff}
+.res-big{font-size:72px;font-weight:900;letter-spacing:-3px;line-height:1}
+.res-sub{font-size:15px;opacity:.75;margin-top:4px;font-weight:700}
+.res-pct{font-size:14px;font-weight:800;margin-top:6px;padding:4px 14px;border-radius:99px;display:inline-block}
+.res-pct.good{background:var(--greenl);color:var(--green)}
+.res-pct.mid{background:var(--warnl);color:var(--warn)}
+.res-pct.bad{background:var(--redl);color:var(--red)}
+.res-msg{font-size:15px;opacity:.85;margin-top:12px;line-height:1.5}
+.byT{background:var(--card);border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:14px}
+.byT-t{font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--muted);margin-bottom:12px}
+.trow{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+.trow:last-child{border-bottom:1px solid var(--line)}
+.tname{flex:1;font-size:13px;font-weight:700;min-width:0}
+.tbar{width:68px;height:5px;background:var(--line);border-radius:99px;overflow:hidden;flex:none}
+.tfill{height:100%}
+.tpct{font-size:12px;font-weight:800;width:34px;text-align:right;flex:none}
+.tbadge{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;flex:none}
+.tbadge.ok{background:var(--greenl);color:var(--green)}
+.tbadge.mid{background:var(--warnl);color:var(--warn)}
+.tbadge.bad{background:var(--redl);color:var(--red)}
+.abox{border-radius:var(--r);padding:16px;margin-bottom:14px;border:1.5px solid #f0c060;background:#fff9ee}
+.at{font-size:13px;font-weight:900;color:#8a5500;margin-bottom:10px}
+.ai{font-size:13px;color:#5a3a00;line-height:1.5;display:flex;gap:8px;margin-bottom:5px}
+.rbtn{width:100%;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;color:#fff;margin-bottom:8px}
+.hlnk{display:block;text-align:center;font-size:14px;color:var(--muted);cursor:pointer;text-decoration:underline;padding:8px}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="home on" id="sc-home">
+<div class="home-inner">
+  <div class="home-top">
+    <div class="home-badge">FATEC 2026 · ADS · 28/06</div>
+    <h1 class="home-title">Simulado<br><span>Vestibular FATEC</span></h1>
+    <p class="home-sub">9 matérias · 50 questões cada · 450 no total<br>no estilo e nível da prova real</p>
+  </div>
+
+  <div class="section-label">⭐ PESO 2 — valem o dobro para ADS</div>
+  <div class="grid2">
+    <div class="scard c-mat" onclick="startQ(0)">
+      <div class="scard-ico">📐</div>
+      <div class="scard-name">Matemática</div>
+      <div class="scard-desc">Funções · Geo · Estatística · Financeira</div>
+      <div class="weight-tag">PESO 2 ★</div>
+    </div>
+    <div class="scard c-log" onclick="startQ(1)">
+      <div class="scard-ico">🧠</div>
+      <div class="scard-name">Raciocínio Lógico</div>
+      <div class="scard-desc">Proposições · Conjuntos · Sequências</div>
+      <div class="weight-tag">PESO 2 ★</div>
+    </div>
+  </div>
+
+  <div class="section-label">PESO 1 — todas as demais</div>
+  <div class="grid3">
+    <div class="scard c-por" onclick="startQ(2)">
+      <div class="scard-ico">📝</div>
+      <div class="scard-name">Português</div>
+      <div class="scard-desc">Interpretação · Gramática · Gêneros</div>
+      <div class="weight-tag">PESO 1</div>
+    </div>
+    <div class="scard c-ing" onclick="startQ(3)">
+      <div class="scard-ico">🇧🇷🇺🇸</div>
+      <div class="scard-name">Inglês</div>
+      <div class="scard-desc">Reading · Grammar · Vocabulary</div>
+      <div class="weight-tag">PESO 1</div>
+    </div>
+    <div class="scard c-fis" onclick="startQ(4)">
+      <div class="scard-ico">⚡</div>
+      <div class="scard-name">Física</div>
+      <div class="scard-desc">Mecânica · Termodinâmica · Óptica</div>
+      <div class="weight-tag">PESO 1</div>
+    </div>
+    <div class="scard c-qui" onclick="startQ(5)">
+      <div class="scard-ico">🧪</div>
+      <div class="scard-name">Química</div>
+      <div class="scard-desc">Átomo · Reações · Orgânica</div>
+      <div class="weight-tag">PESO 1</div>
+    </div>
+    <div class="scard c-bio" onclick="startQ(6)">
+      <div class="scard-ico">🧬</div>
+      <div class="scard-name">Biologia</div>
+      <div class="scard-desc">Célula · Genética · Ecologia</div>
+      <div class="weight-tag">PESO 1</div>
+    </div>
+    <div class="scard c-his" onclick="startQ(7)">
+      <div class="scard-ico">🏛️</div>
+      <div class="scard-name">História</div>
+      <div class="scard-desc">Brasil · Mundo · Contemporânea</div>
+      <div class="weight-tag">PESO 1</div>
+    </div>
+    <div class="scard c-geo" onclick="startQ(8)">
+      <div class="scard-ico">🌎</div>
+      <div class="scard-name">Geografia</div>
+      <div class="scard-desc">Brasil · Geopolítica · Urbanização</div>
+      <div class="weight-tag">PESO 1</div>
+    </div>
+  </div>
+  <div class="home-note">⚠️ <strong>Matemática e Raciocínio Lógico valem o dobro</strong> para ADS. Mas todas as matérias contam. A prova tem 54 questões (5 por matéria + 9 multidisciplinar). Aqui você pratica 50 por matéria — muito acima do que cairá. Prova: <strong>28/06/2026 às 13h</strong>.</div>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="sc-quiz"><div class="inner" id="quiz-inner"></div></div>
+<!-- RESULT -->
+<div class="screen" id="sc-result"><div class="inner" id="res-inner"></div></div>
+
+<!-- MODAL -->
+<div class="mov" id="modal" onclick="maybeClose(event)">
+  <div class="mbox">
+    <div class="mhdr"><div class="mtit">📋 Questões</div><button class="mx" onclick="closeM()">✕</button></div>
+    <div class="qgrid" id="mgrid"></div>
+    <button class="mclose" onclick="closeM()">Fechar</button>
+  </div>
+</div>
+
+<script>
+var SB=[
+// ══════════════════════════════════════════════════════
+// 0 — MATEMÁTICA (50q)
+// ══════════════════════════════════════════════════════
+{name:"Matemática",ico:"📐",bg:"#0a1628",ac:"#1a4aff",
+q:[
+{t:"Funções",q:"Seja f(x) = 2x² − 3x + 1. O valor de f(−1) é:",o:["6","5","4","3"],c:0,w:"f(−1)=2(1)−3(−1)+1=2+3+1=6."},
+{t:"Funções",q:"A função f(x) = x² − 4x + 3 tem raízes reais em x =",o:["1 e 3","−1 e −3","2 e 4","0 e 3"],c:0,w:"Δ=16−12=4. x=(4±2)/2 → x=3 e x=1."},
+{t:"Funções",q:"f(x)=3x−6 se anula quando x=",o:["2","3","−2","6"],c:0,w:"3x−6=0→x=2."},
+{t:"Funções",q:"Para g(x)=x²+2x−3, a abscissa do vértice é:",o:["−1","1","−3","3"],c:0,w:"xv=−b/2a=−2/2=−1."},
+{t:"Funções",q:"(FATEC 2023) O valor máximo de f(x)=−x²+4x−3 é:",o:["1","2","3","4"],c:0,w:"Máx em x=2: f(2)=−4+8−3=1."},
+{t:"Funções",q:"f(x)=|x−3|. f(−1)+f(5)=",o:["6","4","8","2"],c:0,w:"|−4|+|2|=4+2=6."},
+{t:"Funções",q:"2^x = 32 → x =",o:["5","4","6","3"],c:0,w:"2^5=32, x=5."},
+{t:"Funções",q:"log₂ 64 =",o:["6","8","5","7"],c:0,w:"2^6=64."},
+{t:"Funções",q:"Se log₂=0,301, log 8 =",o:["0,903","0,602","1,204","0,301"],c:0,w:"log 8=3×log 2=0,903."},
+{t:"Funções",q:"O domínio de f(x)=√(x−4) é:",o:["x≥4","x>4","x≤4","x≠4"],c:0,w:"x−4≥0→x≥4."},
+{t:"Progressões",q:"PA com a₁=3 e r=5. O 10° termo é:",o:["48","45","50","53"],c:0,w:"a₁₀=3+9×5=48."},
+{t:"Progressões",q:"Soma dos 10 primeiros termos da PA (2,5,8,...) é:",o:["155","145","150","160"],c:0,w:"S₁₀=(10/2)(2+29)=155. a₁₀=29."},
+{t:"Progressões",q:"PG com a₁=2 e q=3. O 5° termo é:",o:["162","54","486","18"],c:0,w:"a₅=2×3⁴=162."},
+{t:"Progressões",q:"PA cujo 2° é 7 e soma dos 3 é 21. Maior elemento:",o:["11","14","10","9"],c:0,w:"Médio=7. Com r=4: 3,7,11. Maior=11."},
+{t:"Progressões",q:"PG infinita com a₁=9 e q=1/3. Soma=",o:["13,5","27","18","9"],c:0,w:"S=9/(1−1/3)=9÷(2/3)=13,5."},
+{t:"Geometria plana",q:"Triângulo: base=10, altura=6. Área=",o:["30 cm²","60 cm²","20 cm²","36 cm²"],c:0,w:"A=(10×6)/2=30."},
+{t:"Geometria plana",q:"Triângulo retângulo com catetos 6 e 8. Hipotenusa=",o:["10","12","9","14"],c:0,w:"h²=36+64=100→h=10."},
+{t:"Geometria plana",q:"Círculo raio=7 (π≈22/7). Área=",o:["154 cm²","44 cm²","77 cm²","308 cm²"],c:0,w:"A=(22/7)×49=154."},
+{t:"Geometria plana",q:"Quadrado com diagonal=8√2. Perímetro=",o:["32 cm","16 cm","24 cm","64 cm"],c:0,w:"l√2=8√2→l=8. P=32."},
+{t:"Geometria plana",q:"Trapézio bases 10 e 6, altura 4. Área=",o:["32","40","24","48"],c:0,w:"A=(10+6)×4/2=32."},
+{t:"Geometria espacial",q:"Cubo aresta 5 cm. Volume=",o:["125 cm³","25 cm³","75 cm³","150 cm³"],c:0,w:"V=5³=125."},
+{t:"Geometria espacial",q:"Cilindro raio=3, h=10 (π≈3,14). Volume≈",o:["282,6","94,2","314","188,4"],c:0,w:"V=3,14×9×10=282,6."},
+{t:"Geometria espacial",q:"Esfera raio=6 (π≈3). Volume=",o:["864 cm³","288 cm³","432 cm³","648 cm³"],c:0,w:"V=(4/3)×3×216=864."},
+{t:"Trigonometria",q:"Se sen α=3/5, cos α=",o:["4/5","3/4","5/3","1/5"],c:0,w:"cos²α=1−9/25=16/25→4/5."},
+{t:"Trigonometria",q:"tg(45°)=",o:["1","0","√2","√3"],c:0,w:"tg45°=sen45°/cos45°=1."},
+{t:"Trigonometria",q:"Mastro, sombra=10m, ângulo 60° (√3≈1,73). Altura=",o:["17,3 m","10 m","5,77 m","20 m"],c:0,w:"tg60°=h/10→h=10√3≈17,3m."},
+{t:"Trigonometria",q:"sen(30°)+cos(60°)=",o:["1","1/2","√3","2"],c:0,w:"1/2+1/2=1."},
+{t:"Combinatória",q:"Anagramas de FATO:",o:["24","12","6","48"],c:0,w:"4!=24."},
+{t:"Combinatória",q:"5 alunos, escolher 2 para comissão:",o:["10","20","5","15"],c:0,w:"C(5,2)=10."},
+{t:"Combinatória",q:"Senhas de 3 dígitos distintos dos dígitos {1,2,3,4,5}:",o:["60","120","20","30"],c:0,w:"A(5,3)=5×4×3=60."},
+{t:"Combinatória",q:"6 pessoas, escolher presidente e vice:",o:["30","15","36","12"],c:0,w:"A(6,2)=6×5=30."},
+{t:"Combinatória",q:"Números de 2 algarismos distintos com {1,2,3,4}:",o:["12","6","16","8"],c:0,w:"A(4,2)=4×3=12."},
+{t:"Probabilidade",q:"Dado honesto. P(par)=",o:["1/2","1/3","2/3","1/6"],c:0,w:"3/6=1/2."},
+{t:"Probabilidade",q:"Urna: 4 vermelhas, 6 azuis. P(vermelha)=",o:["2/5","3/5","1/4","1/2"],c:0,w:"4/10=2/5."},
+{t:"Probabilidade",q:"2 moedas. P(cara em ambas)=",o:["1/4","1/2","3/4","1"],c:0,w:"{CC,CK,KC,KK}→1/4."},
+{t:"Probabilidade",q:"2 dados. P(soma=7)=",o:["1/6","5/36","1/4","7/36"],c:0,w:"6 pares somam 7→6/36=1/6."},
+{t:"Probabilidade",q:"Baralho 52 cartas. P(ás)=",o:["1/13","1/4","1/52","4/13"],c:0,w:"4/52=1/13."},
+{t:"Estatística",q:"Média de 5,8,12,7,3:",o:["7","6","8","9"],c:0,w:"35/5=7."},
+{t:"Estatística",q:"Mediana de {2,3,5,7,9}:",o:["5","3","7","6"],c:0,w:"3° valor=5."},
+{t:"Estatística",q:"Moda de {2,3,3,5,7,3,8,5}:",o:["3","5","2","7"],c:0,w:"3 aparece 3×."},
+{t:"Estatística",q:"Variância de {2,4,6,8,10}:",o:["8","4","10","6"],c:0,w:"Média=6. Desvios²: 16,4,0,4,16→40/5=8."},
+{t:"Estatística",q:"Média ponderada: nota6(p2) e nota8(p3)=",o:["7,2","7,0","7,5","6,8"],c:0,w:"(12+24)/5=36/5=7,2."},
+{t:"Equações",q:"Sistema x+y=10; x−y=4 → x=",o:["7","6","8","5"],c:0,w:"2x=14→x=7, y=3."},
+{t:"Equações",q:"3x−2=x+8 → x=",o:["5","3","4","6"],c:0,w:"2x=10→x=5."},
+{t:"Equações",q:"Mistura 50L razão 2:3 (gasolina:álcool). Gasolina=",o:["20L","25L","30L","15L"],c:0,w:"50×2/5=20L."},
+{t:"Equações",q:"2^(x+1)=16 → x=",o:["3","4","2","5"],c:0,w:"x+1=4→x=3."},
+{t:"Equações",q:"x²−5x+6=0 tem raízes:",o:["2 e 3","−2 e −3","1 e 6","2 e −3"],c:0,w:"Δ=1. x=(5±1)/2→2 e 3."},
+{t:"Matemática financeira",q:"Produto R$200 com aumento 15%. Novo preço=",o:["R$230","R$215","R$220","R$250"],c:0,w:"200×1,15=230."},
+{t:"Matemática financeira",q:"Capital R$2000, 3%/mês, 4 meses (JS). Juros=",o:["R$240","R$60","R$120","R$180"],c:0,w:"J=2000×0,03×4=240."},
+{t:"Matemática financeira",q:"Desconto 20% sobre R$500. Preço final=",o:["R$400","R$450","R$380","R$420"],c:0,w:"500×0,80=400."},
+{t:"Matemática financeira",q:"Capital dobra em JS em 10 meses. Taxa mensal=",o:["10%","5%","20%","2%"],c:0,w:"C×i×10=C→i=10%."},
+{t:"Matemática financeira",q:"R$1000 a 10%/ano JC por 2 anos. Montante=",o:["R$1210","R$1200","R$1100","R$1220"],c:0,w:"1000×1,1²=1210."}
+]},
+
+// ══════════════════════════════════════════════════════
+// 1 — RACIOCÍNIO LÓGICO (50q)
+// ══════════════════════════════════════════════════════
+{name:"Raciocínio Lógico",ico:"🧠",bg:"#1a0a2e",ac:"#f5a623",
+q:[
+{t:"Proposições",q:"Negação de 'Todos os alunos passaram' é:",o:["Algum aluno não passou","Nenhum passou","Todos não passaram","Alguns passaram"],c:0,w:"¬(∀x P(x)) = ∃x ¬P(x)."},
+{t:"Proposições",q:"¬(p∧q) é equivalente a:",o:["¬p∨¬q","¬p∧¬q","p∨q","¬p∨q"],c:0,w:"Lei de De Morgan: ¬(p∧q)≡¬p∨¬q."},
+{t:"Proposições",q:"p=V, q=F. Valor de (p∨q):",o:["Verdadeiro","Falso","Indefinido","Depende"],c:0,w:"V∨F=V."},
+{t:"Proposições",q:"p=V, q=F. Valor de (p→q):",o:["Falso","Verdadeiro","Indefinido","V se p=V"],c:0,w:"V→F=F."},
+{t:"Proposições",q:"'Se chove, a rua molha.' É FALSA quando:",o:["Chove e rua não molha","Chove e rua molha","Não chove e rua molha","Não chove e rua não molha"],c:0,w:"p→q só é F quando p=V e q=F."},
+{t:"Proposições",q:"'Se não estudo, reprovo.' A contrapositiva é:",o:["Se não reprovo, estudo","Se reprovo, não estudei","Se estudo, não reprovo","Se não reprovo, não estudo"],c:0,w:"Contrapositiva de p→q: ¬q→¬p."},
+{t:"Proposições",q:"p∧¬p é sempre:",o:["Contradição (F)","Tautologia (V)","Contingência","Equivalência"],c:0,w:"p e ¬p não podem ser V juntos."},
+{t:"Proposições",q:"p↔q é V quando:",o:["p e q têm mesmo valor lógico","p=V","q=F","p implica q"],c:0,w:"Bicondicional: V↔V=V; F↔F=V."},
+{t:"Proposições",q:"Negação de p∨q:",o:["¬p∧¬q","¬p∨¬q","p∧q","¬p∨q"],c:0,w:"De Morgan: ¬(p∨q)=¬p∧¬q."},
+{t:"Proposições",q:"'Todo A é B' e 'Nenhum B é C'. Conclusão:",o:["Nenhum A é C","Todo A é C","Algum A é C","Nenhum C é A"],c:0,w:"A⊆B e B∩C=∅ → A∩C=∅."},
+{t:"Conjuntos",q:"A={1,2,3,4}, B={3,4,5,6}. A∩B=",o:["{3,4}","{1,2,3,4,5,6}","{1,2}","{5,6}"],c:0,w:"Elementos comuns."},
+{t:"Conjuntos",q:"A={1,2,3}, B={3,4,5}. A∪B=",o:["{1,2,3,4,5}","{3}","{1,2}","{4,5}"],c:0,w:"Todos os elementos."},
+{t:"Conjuntos",q:"Turma 30: mat=18, fís=15, ambos=8. Nenhuma=",o:["5","7","8","3"],c:0,w:"|M∪F|=25→30−25=5."},
+{t:"Conjuntos",q:"60% celular, 40% tablet, 20% ambos. Pelo menos um=",o:["80%","100%","60%","70%"],c:0,w:"60+40−20=80%."},
+{t:"Conjuntos",q:"n(A)=10, n(B)=8, n(A∩B)=3. n(A∪B)=",o:["15","18","13","21"],c:0,w:"10+8−3=15."},
+{t:"Conjuntos",q:"n(U)=20, n(A)=7. n(A')=",o:["13","7","27","14"],c:0,w:"20−7=13."},
+{t:"Sequências",q:"2, 5, 10, 17, 26, ___",o:["37","35","33","39"],c:0,w:"Difs: 3,5,7,9,11→26+11=37."},
+{t:"Sequências",q:"1,1,2,3,5,8,13,___",o:["21","18","20","24"],c:0,w:"Fibonacci: 8+13=21."},
+{t:"Sequências",q:"A,C,E,G,___",o:["I","H","J","K"],c:0,w:"Pula 1 letra: A(1),C(3),E(5),G(7),I(9)."},
+{t:"Sequências",q:"3,6,12,24,___",o:["48","36","32","42"],c:0,w:"Razão=2: 24×2=48."},
+{t:"Sequências",q:"1,4,9,16,25,___",o:["36","35","34","49"],c:0,w:"Quadrados perfeitos: 6²=36."},
+{t:"Sequências",q:"2,3,5,7,11,13,___",o:["17","15","16","14"],c:0,w:"Primos: após 13 vem 17."},
+{t:"Sequências",q:"100,50,25,12,5,___",o:["6,25","5","10","7,5"],c:0,w:"Razão=1/2: 12,5×0,5=6,25."},
+{t:"Problemas lógicos",q:"João>Maria>Pedro. Conclusão:",o:["João>Pedro","Pedro>João","Maria>João","João=Pedro"],c:0,w:"Transitividade."},
+{t:"Problemas lógicos",q:"Todo gato é animal. Mimi é gato. Logo:",o:["Mimi é animal","Todo animal é gato","Mimi não é animal","Nada concluir"],c:0,w:"Silogismo válido."},
+{t:"Problemas lógicos",q:"Carla<Ana<Bia. Mais velha:",o:["Bia","Ana","Carla","Não sei"],c:0,w:"Bia é a mais velha."},
+{t:"Problemas lógicos",q:"Todo B é C, nenhum A é C. Conclusão:",o:["Nenhum A é B","Todo A é B","Algum A é C","Nenhum B é C"],c:0,w:"A∩C=∅ e B⊆C → A∩B=∅."},
+{t:"Problemas lógicos",q:"'Se passo, comemoro.' Não comemorou. Logo:",o:["Não passou","Passou mas não quis","Vai tentar de novo","Nada concluir"],c:0,w:"Contrapositiva: não comemorou→não passou."},
+{t:"Problemas lógicos",q:"5 pessoas, cada uma aperta mão de todas. Total=",o:["10","20","5","15"],c:0,w:"C(5,2)=10."},
+{t:"Problemas lógicos",q:"5 cadeiras, 5 amigos. Quantas formas?",o:["120","60","24","100"],c:0,w:"5!=120."},
+{t:"Problemas lógicos",q:"A ou B, mas não ambos. A=V. B=",o:["F","V","Indefinido","Igual a A"],c:0,w:"Disjunção exclusiva: A⊕B=V com A=V→B=F."},
+{t:"Raciocínio aplicado",q:"Torneira 1: 6h; Torneira 2: 3h. Juntas: ___h",o:["2","4","1,5","3"],c:0,w:"1/6+1/3=1/2→2h."},
+{t:"Raciocínio aplicado",q:"Trem: 240km em 3h. Velocidade=",o:["80 km/h","120 km/h","60 km/h","100 km/h"],c:0,w:"240/3=80."},
+{t:"Raciocínio aplicado",q:"(FATEC) Carro parte 8h, chega 11h, 240km. Velocidade=",o:["80 km/h","60 km/h","100 km/h","120 km/h"],c:0,w:"3h→240/3=80."},
+{t:"Raciocínio aplicado",q:"1/4 aluguel + 1/3 alimentação. Fração restante=",o:["5/12","7/12","1/12","1/4"],c:0,w:"1−7/12=5/12."},
+{t:"Raciocínio aplicado",q:"3 operários→12 dias. 6 operários→? dias",o:["6","4","8","9"],c:0,w:"Inv proporcional: 3×12=6×d→d=6."},
+{t:"Raciocínio aplicado",q:"10 pessoas: N(N−1)/2 apertos com N=10:",o:["45","90","55","100"],c:0,w:"10×9/2=45."},
+{t:"Raciocínio aplicado",q:"Preço +25% depois −20%. Resultado final:",o:["igual","maior 5%","menor 5%","maior 20%"],c:0,w:"1,25×0,80=1,00. Igual ao original."},
+{t:"Probabilidade lógica",q:"3 vermelhas, 2 azuis. P(azul)=",o:["2/5","3/5","1/5","1/2"],c:0,w:"2/5."},
+{t:"Probabilidade lógica",q:"10 alunos: 6 meninas. P(menino)=",o:["2/5","3/5","1/2","1/5"],c:0,w:"4/10=2/5."},
+{t:"Probabilidade lógica",q:"Dado. P(>4)=",o:["1/3","1/2","2/3","1/6"],c:0,w:"{5,6}→2/6=1/3."},
+{t:"Probabilidade lógica",q:"5 bolas {1..5}. P(ímpar)=",o:["3/5","2/5","1/5","4/5"],c:0,w:"{1,3,5}→3/5."},
+{t:"Multidisciplinar",q:"(FATEC 2023) 'Precariado' é classe marcada por:",o:["Insegurança no trabalho e vínculos instáveis","Alta estabilidade salarial","Profissionais de TI","Servidores públicos"],c:0,w:"Conceito de Guy Standing: trabalhadores sem seguridade, identidade ou carreira."},
+{t:"Multidisciplinar",q:"Recíproca de 'Se A então B':",o:["Se B então A","Se ¬A então ¬B","Se ¬B então ¬A","A e B equivalem"],c:0,w:"Recíproca: B→A."},
+{t:"Multidisciplinar",q:"R$5000, 2%/mês, 6 meses (JS). Montante=",o:["R$5600","R$5100","R$5200","R$6200"],c:0,w:"J=5000×0,02×6=600. M=5600."},
+{t:"Multidisciplinar",q:"Diagonais de um hexágono:",o:["9","12","6","15"],c:0,w:"n(n−3)/2=6×3/2=9."},
+{t:"Multidisciplinar",q:"R$120000 dividido 1:2:3. Maior parte=",o:["R$60000","R$40000","R$20000","R$80000"],c:0,w:"3/6×120000=60000."},
+{t:"Multidisciplinar",q:"Triângulo A=50°, B=70°. C=",o:["60°","80°","90°","70°"],c:0,w:"180−50−70=60°."},
+{t:"Multidisciplinar",q:"(FATEC) 'Se não cuido da saúde, adoeço.' Afirmar que não adoeci permite concluir:",o:["Cuidei da saúde","Não cuidei","Nada se conclui","Adoeci de outra forma"],c:0,w:"Contrapositiva válida: não adoeci→cuidei."},
+{t:"Multidisciplinar",q:"Um relógio atrasa 2 minutos/hora. Em 1 dia (24h) atrasa:",o:["48 min","24 min","2h","1h"],c:0,w:"2×24=48 min."}
+]},
+
+// ══════════════════════════════════════════════════════
+// 2 — PORTUGUÊS (50q)
+// ══════════════════════════════════════════════════════
+{name:"Português",ico:"📝",bg:"#1a3a0a",ac:"#4caf50",
+q:[
+{t:"Interpretação de texto",q:"Em um texto, a 'ideia central' ou 'tese' é aquela que:",o:["Sustenta toda a argumentação do autor","Aparece apenas no título","Está sempre na conclusão","É sempre explícita no texto"],c:0,w:"A tese/ideia central é o argumento principal que organiza e sustenta todo o texto."},
+{t:"Interpretação de texto",q:"'Inferir' num texto significa:",o:["Deduzir informações não explicitadas, mas sugeridas pelo texto","Copiar trechos do autor","Resumir o texto","Identificar palavras desconhecidas"],c:0,w:"Inferir = deduzir implicitamente a partir de pistas textuais. É habilidade central na FATEC."},
+{t:"Interpretação de texto",q:"A função da linguagem predominante em textos publicitários é:",o:["Conativa/apelativa — persuadir o receptor a agir","Referencial — informar objetivamente","Emotiva — expressar emoções do emissor","Metalinguística — falar sobre a própria língua"],c:0,w:"Publicidade usa a função conativa/apelativa para convencer e persuadir o leitor."},
+{t:"Interpretação de texto",q:"Em 'O cachorro do João latiu muito', o termo 'do João' é:",o:["Adjunto adnominal que especifica 'cachorro'","Objeto direto do verbo","Predicativo do sujeito","Adjunto adverbial de posse"],c:0,w:"'Do João' é adjunto adnominal: modifica o substantivo 'cachorro', especificando a quem pertence."},
+{t:"Interpretação de texto",q:"O pronome 'lhe' em 'Eu lhe disse a verdade' substitui:",o:["Objeto indireto (a ele/a ela)","Objeto direto","Sujeito da oração","Predicativo"],c:0,w:"'Lhe' é pronome oblíquo átono de 3ª pessoa no dativo (objeto indireto)."},
+{t:"Coesão e coerência",q:"Conectivo que indica CAUSA:",o:["porque","portanto","entretanto","além disso"],c:0,w:"'Porque' introduz oração causal. 'Portanto' = conclusão. 'Entretanto' = oposição."},
+{t:"Coesão e coerência",q:"Conectivo que indica CONCLUSÃO:",o:["portanto","embora","porque","todavia"],c:0,w:"'Portanto', 'logo', 'assim' introduzem conclusões."},
+{t:"Coesão e coerência",q:"Conectivo que indica OPOSIÇÃO/CONCESSÃO:",o:["embora","portanto","visto que","assim"],c:0,w:"'Embora', 'apesar de', 'ainda que' indicam concessão/oposição."},
+{t:"Coesão e coerência",q:"Texto coeso é aquele que:",o:["Usa conectivos e pronomes para ligar as partes sem repetição desnecessária","Tem muitas palavras difíceis","É longo e detalhado","Contém opiniões do autor"],c:0,w:"Coesão textual é a propriedade de ligação entre os elementos do texto, garantindo fluidez."},
+{t:"Gramática",q:"Assinale a frase com CRASE correta:",o:["Fui à padaria de manhã","Fui à trabalhar cedo","Entreguei à ele","Começou à chover"],c:0,w:"'À padaria' = a+a (feminino com artigo). Antes de verbo, masculino ou pronome pessoal, crase é proibida."},
+{t:"Gramática",q:"'Haviam muitos candidatos inscritos.' O correto é:",o:["Havia muitos candidatos","Haviam muitos candidatos","Houveram muitos candidatos","Ambas corretas"],c:0,w:"'Haver' = existir é impessoal: sempre no singular. 'Havia muitos candidatos.'"},
+{t:"Gramática",q:"'Faz dois anos que não te vejo.' O verbo 'faz' está correto porque:",o:["'Fazer' indicando tempo é impessoal e fica no singular","'Dois anos' exige plural","O sujeito é oculto","'Faz' concorda com 'te'"],c:0,w:"'Fazer' indicando tempo decorrido é impessoal: nunca varia. 'Fazem' seria erro."},
+{t:"Gramática",q:"'Vendem-se casas.' O 'se' é:",o:["Apassivador — voz passiva sintética","Indeterminador do sujeito","Reflexivo","Expletivo"],c:0,w:"VTD + se = voz passiva sintética. 'Casas' é sujeito paciente. Verbo concorda: casas→vendem."},
+{t:"Gramática",q:"'Precisa-se de funcionários.' O 'se' é:",o:["Índice de indeterminação","Apassivador","Reflexivo","Pronome pessoal"],c:0,w:"VTI + se = indeterminação. Sem sujeito determinado. Verbo no singular."},
+{t:"Gramática",q:"Qual alternativa apresenta sujeito composto?",o:["Pedro e Ana chegaram juntos","Pedro chegou cedo","A turma toda veio","Ninguém apareceu"],c:0,w:"Sujeito composto: dois ou mais núcleos. 'Pedro e Ana' são os dois núcleos do sujeito."},
+{t:"Gramática",q:"Em 'Embora chovesse, saí de casa', a oração sublinhada é:",o:["Subordinada adverbial concessiva","Subordinada adverbial causal","Coordenada adversativa","Subordinada adverbial temporal"],c:0,w:"'Embora' introduz oração subordinada adverbial concessiva."},
+{t:"Gramática",q:"Período composto por coordenação:",o:["Estudei muito, mas não passei","Quando cheguei, ele saiu","Se estudar, passará","Embora cansado, continuei"],c:0,w:"Coordenação: orações independentes ligadas por conjunção coordenativa. 'Mas' = adversativa."},
+{t:"Gramática",q:"O vocábulo 'saudade' é:",o:["Substantivo abstrato","Adjetivo","Verbo","Advérbio"],c:0,w:"'Saudade' nomeia um sentimento — é substantivo abstrato."},
+{t:"Gramática",q:"Em 'Ele correu rapidamente', 'rapidamente' é:",o:["Advérbio de modo","Adjetivo","Substantivo","Preposição"],c:0,w:"Modifica o verbo 'correu', indicando modo. Advérbio de modo."},
+{t:"Gramática",q:"A voz passiva analítica de 'Maria escreveu o texto' é:",o:["O texto foi escrito por Maria","O texto escreveu-se","Maria foi escrita","O texto é escrito Maria"],c:0,w:"Voz passiva analítica: sujeito paciente + ser + particípio + por + agente."},
+{t:"Literatura",q:"O Romantismo brasileiro é dividido em fases. A primeira fase é caracterizada por:",o:["Indianismo e exaltação da natureza brasileira","Realismo social e crítica à burguesia","Poesia satírica e anticlerical","Prosa naturalista e determinismo"],c:0,w:"1ª fase do Romantismo: indianismo (Gonçalves Dias, José de Alencar) e exaltação da pátria."},
+{t:"Literatura",q:"Machado de Assis é o principal representante do:",o:["Realismo/Naturalismo brasileiro","Romantismo brasileiro","Parnasianismo","Modernismo"],c:0,w:"Machado de Assis é o maior nome do Realismo brasileiro (Memórias Póstumas, Dom Casmurro)."},
+{t:"Literatura",q:"A Semana de Arte Moderna de 1922 marcou o início do:",o:["Modernismo no Brasil","Parnasianismo","Romantismo","Simbolismo"],c:0,w:"A Semana de Arte Moderna (1922, São Paulo) inaugurou o Modernismo brasileiro."},
+{t:"Literatura",q:"O soneto é uma forma poética com:",o:["14 versos divididos em dois quartetos e dois tercetos","10 versos em estrofes variadas","12 versos em 3 quadras","Número livre de versos"],c:0,w:"Soneto = 14 versos: 2 quartetos (4v) + 2 tercetos (3v)."},
+{t:"Literatura",q:"'Dom Casmurro' de Machado de Assis tem como narrador:",o:["Bentinho (Casmurro), narrador em 1ª pessoa não confiável","Um narrador onisciente em 3ª pessoa","Capitu, a protagonista","Um narrador onisciente neutro"],c:0,w:"Dom Casmurro é narrado por Bentinho em 1ª pessoa — narrador subjetivo e não confiável, o que gera a dúvida sobre Capitu."},
+{t:"Gêneros textuais",q:"O gênero 'editorial' de jornal tem função predominantemente:",o:["Argumentativa — defende posição do veículo","Narrativa — conta acontecimentos","Descritiva — descreve personagens","Injuntiva — dá instruções"],c:0,w:"Editorial = texto argumentativo que expressa a opinião do veículo jornalístico sobre tema atual."},
+{t:"Gêneros textuais",q:"Uma 'receita culinária' é exemplo de texto:",o:["Injuntivo/instrucional","Argumentativo","Narrativo","Dissertativo"],c:0,w:"Texto injuntivo/instrucional: orienta, prescreve ações a serem seguidas."},
+{t:"Gêneros textuais",q:"(FATEC) A crônica jornalística diferencia-se do artigo de opinião por:",o:["Ser mais subjetiva, literária e ligada ao cotidiano","Ter maior rigor técnico e impessoalidade","Ser sempre mais longa e formal","Não conter argumentação"],c:0,w:"Crônica: texto literário-jornalístico, subjetivo, focado no cotidiano. Artigo: mais formal e argumentativo."},
+{t:"Variação linguística",q:"'Gíria' é um exemplo de variação linguística:",o:["Social/diastrática — usada por grupos sociais específicos","Diatópica — variação geográfica","Diacrônica — variação ao longo do tempo","Diafásica — variação por situação comunicativa"],c:0,w:"Gíria = variação social, usada por grupos específicos (jovens, profissões, tribos)."},
+{t:"Variação linguística",q:"A diferença de pronúncia entre o 'r' paulista e o 'r' carioca é exemplo de variação:",o:["Diatópica (regional/geográfica)","Diastrática (social)","Diacrônica (histórica)","Diafásica (situacional)"],c:0,w:"Variação diatópica: diferenças linguísticas entre regiões geográficas."},
+{t:"Fonética",q:"Quantos fonemas tem a palavra 'chuva'?",o:["4","5","3","6"],c:0,w:"CH=1 fonema(/ʃ/), U, V, A = 4 fonemas no total."},
+{t:"Fonética",q:"Qual palavra tem dígrafo?",o:["carro","gato","mesa","solo"],c:0,w:"'Carro' tem o dígrafo 'rr' (dois grafemas, um fonema)."},
+{t:"Morfologia",q:"Em 'desfazível', o prefixo 'des-' indica:",o:["Negação/reversão","Intensidade","Tempo passado","Plural"],c:0,w:"'Des-' = prefixo de negação ou reversão (desfazer = reverter fazer)."},
+{t:"Morfologia",q:"'Livraria' é formada por:",o:["Derivação sufixal (livro + aria)","Composição","Derivação prefixal","Abreviação"],c:0,w:"'Livr(o)' + '-aria' (sufixo) = derivação sufixal."},
+{t:"Morfologia",q:"Qual palavra está no grau superlativo absoluto sintético?",o:["Belíssimo","Muito belo","O mais belo","Mais belo"],c:0,w:"Superlativo absoluto sintético: formado com sufixo (-íssimo, -imo)."},
+{t:"Sintaxe",q:"Em 'A notícia agradou aos alunos', 'aos alunos' é:",o:["Objeto indireto","Objeto direto","Sujeito","Predicativo"],c:0,w:"'Agradar' é VTI. 'Aos alunos' recebe a ação via preposição = objeto indireto."},
+{t:"Sintaxe",q:"Em 'Que dia bonito!', a frase é:",o:["Exclamativa","Interrogativa","Declarativa afirmativa","Imperativa"],c:0,w:"Frase exclamativa: expressa emoção intensa, termina com ponto de exclamação."},
+{t:"Sintaxe",q:"'O livro que comprei é interessante.' 'que' é pronome relativo com função de:",o:["Objeto direto de 'comprei'","Sujeito","Adjunto adnominal","Predicativo"],c:0,w:"'Que' = pronome relativo retomando 'livro'. Na oração relativa funciona como OD de 'comprei'."},
+{t:"Pontuação",q:"'João, venha cá.' A vírgula indica:",o:["Vocativo","Aposto","Adjunto adverbial deslocado","Enumeração"],c:0,w:"Vírgula separa o vocativo ('João') do resto da frase."},
+{t:"Pontuação",q:"'Ele chegou; ela foi embora.' O ponto e vírgula separa:",o:["Orações coordenadas com certa autonomia","Aposto explicativo","Vocativo","Adjunto adverbial"],c:0,w:"Ponto e vírgula = separação de orações coordenadas com mais autonomia que a vírgula."},
+{t:"Redação",q:"Num texto dissertativo-argumentativo, a estrutura básica é:",o:["Introdução (tese), desenvolvimento (argumentos), conclusão (retomada+proposta)","Início, meio e fim sem estrutura fixa","Narração de fatos em ordem cronológica","Lista de argumentos sem conectivos"],c:0,w:"Dissertativo-argumentativo: tese na introdução, argumentos no desenvolvimento, conclusão que retoma e propõe."},
+{t:"Redação",q:"'Coerência' em um texto significa:",o:["Unidade de sentido — ideias relacionadas sem contradição","Uso correto de vírgulas","Vocabulário rico e variado","Parágrafos longos"],c:0,w:"Coerência = unidade semântica do texto. As ideias devem ser logicamente conectadas e sem contradição."},
+{t:"Redação",q:"(FATEC 2025) Tema: 'Estratégias para o incentivo à leitura no Brasil'. A proposta de intervenção no texto FATEC deve:",o:["Apresentar ação concreta com agente, ação, meio e finalidade","Apenas descrever o problema","Narrar uma história sobre leitura","Expor opiniões sem argumentos"],c:0,w:"A FATEC exige proposta de intervenção com: agente + ação + meio/modo + finalidade."},
+{t:"Semântica",q:"Palavras sinônimas são aquelas que:",o:["Têm sentidos semelhantes ou equivalentes","Têm sentidos opostos","Têm a mesma grafia e sons diferentes","São palavras de campos semânticos diferentes"],c:0,w:"Sinônimos: palavras de sentidos equivalentes ou muito próximos."},
+{t:"Semântica",q:"Polissemia é o fenômeno em que:",o:["Uma palavra tem vários sentidos","Palavras diferentes têm o mesmo som","Palavras com escrita igual têm sons diferentes","Palavras novas são criadas"],c:0,w:"Polissemia: uma mesma palavra com vários sentidos possíveis (ex: 'manga' = fruta ou parte da roupa)."},
+{t:"Semântica",q:"A figura de linguagem em 'O tempo voa' é:",o:["Metáfora — comparação implícita","Metonímia — substituição por contiguidade","Hipérbole — exagero","Eufemismo — suavização"],c:0,w:"'Tempo voa': atribui ao tempo a qualidade de voar = metáfora (comparação implícita)."},
+{t:"Semântica",q:"'Ele tem uns vinte anos.' O numeral 'vinte' indica:",o:["Aproximação (numeral com valor impreciso)","Exatidão","Exagero","Ironia"],c:0,w:"'Uns vinte' = valor aproximado. O artigo indefinido 'uns' marca a imprecisão."},
+{t:"Semântica",q:"Antônimo de 'euforia' é:",o:["apatia","alegria","entusiasmo","animação"],c:0,w:"Euforia = estado de alegria intensa. Antônimo: apatia (indiferença, falta de motivação)."}
+]},
+
+// ══════════════════════════════════════════════════════
+// 3 — INGLÊS (50q)
+// ══════════════════════════════════════════════════════
+{name:"Inglês",ico:"🇧🇷🇺🇸",bg:"#0a2a3a",ac:"#00bcd4",
+q:[
+{t:"Reading comprehension",q:"Read: 'Technology is changing the way we work and communicate.' The main idea is that:",o:["Technology transforms work and communication","Technology is expensive","Work is difficult today","Communication was better before"],c:0,w:"The sentence states technology changes how we work and communicate — that's the main idea."},
+{t:"Reading comprehension",q:"'Despite the rain, they decided to go to the beach.' 'Despite' introduces:",o:["A contrast/concession","A reason","A result","An addition"],c:0,w:"'Despite' = apesar de. Introduces contrast/concession — similar to 'embora' in Portuguese."},
+{t:"Reading comprehension",q:"'The meeting was postponed due to technical problems.' The meeting was:",o:["Moved to a later date","Cancelled permanently","Moved to an earlier date","Held as planned"],c:0,w:"'Postponed' = adiado. The meeting was moved to a later time."},
+{t:"Reading comprehension",q:"'She has been working here for five years.' This means she:",o:["Started 5 years ago and still works here","Worked here 5 years ago and left","Will work here for 5 years","Worked here exactly 5 years"],c:0,w:"Present Perfect Continuous: action started in the past and continues now."},
+{t:"Reading comprehension",q:"'If you study hard, you will pass the exam.' This sentence expresses:",o:["A real future condition","An unreal/hypothetical condition","A past habit","A command"],c:0,w:"First conditional (if + present, will + inf) = real, possible future condition."},
+{t:"Grammar",q:"'She ___ to school every day.' Complete with the correct verb form:",o:["goes","go","is going","went"],c:0,w:"Simple Present for habitual actions. She (3rd person) → goes."},
+{t:"Grammar",q:"'They ___ playing football when it started raining.' Correct form:",o:["were","are","was","had been"],c:0,w:"Past Continuous: were + verb-ing. Used for action in progress interrupted by another."},
+{t:"Grammar",q:"'I have never ___ to Japan.' Correct form:",o:["been","went","go","going"],c:0,w:"Present Perfect + never: 'have never been'. 'Been' = past participle of 'be/go'."},
+{t:"Grammar",q:"Choose the correct question tag: 'She is your teacher, ___?'",o:["isn't she","is she","doesn't she","wasn't she"],c:0,w:"Positive statement → negative tag. 'is' → 'isn't she?'"},
+{t:"Grammar",q:"'He is taller ___ his brother.' Complete:",o:["than","then","that","as"],c:0,w:"Comparative: taller than. 'Than' introduces the second element of comparison."},
+{t:"Grammar",q:"'This is the ___ movie I've ever seen.' Superlative:",o:["best","better","good","more good"],c:0,w:"Superlative of 'good' = best. Irregular: good→better→best."},
+{t:"Grammar",q:"'If I ___ you, I would study more.' Correct form:",o:["were","am","was","be"],c:0,w:"Second conditional: if + past subjunctive (were for all persons in formal English)."},
+{t:"Grammar",q:"'The report ___ by the manager yesterday.' Passive voice:",o:["was written","wrote","has written","is written"],c:0,w:"Passive voice: was/were + past participle. Yesterday = past → was written."},
+{t:"Grammar",q:"'She asked me ___ I had finished the project.' Indirect speech:",o:["if","that","what","whether or if"],c:0,w:"Yes/no questions in indirect speech use 'if' or 'whether'."},
+{t:"Grammar",q:"'I wish I ___ fly.' Express a wish:",o:["could","can","will","would"],c:0,w:"'I wish + past modal': I wish I could fly (unreal wish in the present)."},
+{t:"Vocabulary",q:"'Affordable' means:",o:["priced reasonably / that one can pay for","expensive","unavailable","unreliable"],c:0,w:"Affordable = com preço acessível, que se pode pagar. Common in FATEC tech contexts."},
+{t:"Vocabulary",q:"'Breakthrough' in technology means:",o:["an important discovery or advance","a failure","a regular update","a breakdown"],c:0,w:"Breakthrough = avanço importante, descoberta significativa."},
+{t:"Vocabulary",q:"'Outsource' means:",o:["to hire an external company to do work","to fire employees","to work overtime","to upgrade software"],c:0,w:"Outsource = terceirizar: contratar empresa externa para realizar um serviço."},
+{t:"Vocabulary",q:"'Deadline' means:",o:["the final date by which something must be done","the first day of a project","a type of software","a meeting point"],c:0,w:"Deadline = prazo final, data limite para entrega de um trabalho."},
+{t:"Vocabulary",q:"'State-of-the-art' technology is:",o:["the most modern and advanced available","outdated","affordable","simple to use"],c:0,w:"State-of-the-art = de última geração, o mais avançado disponível."},
+{t:"Vocabulary",q:"'User-friendly' software is:",o:["easy to use and understand","expensive","powerful","fast"],c:0,w:"User-friendly = fácil de usar, com boa usabilidade — essencial em ADS."},
+{t:"Vocabulary",q:"'To launch' a product means:",o:["to introduce it to the market officially","to remove it from sale","to test it internally","to update it"],c:0,w:"Launch = lançar (um produto, aplicativo, site) ao mercado."},
+{t:"Technology vocabulary",q:"'Bug' in software refers to:",o:["an error or defect in the program","a computer virus","a type of file","a new feature"],c:0,w:"Bug = erro ou defeito no código que causa comportamento inesperado."},
+{t:"Technology vocabulary",q:"'Cloud computing' means:",o:["storing and processing data on remote servers via the internet","a weather forecasting system","a type of computer chip","offline data storage"],c:0,w:"Cloud computing = computação em nuvem: armazenamento e processamento de dados em servidores remotos."},
+{t:"Technology vocabulary",q:"'Open source' software is:",o:["software with publicly available source code that can be modified","software that costs nothing to buy","software with no updates","software made by one company only"],c:0,w:"Open source = código aberto: o código-fonte é público e pode ser modificado pela comunidade."},
+{t:"Technology vocabulary",q:"'UX' in UX Design stands for:",o:["User Experience","Universal Extension","Unique Export","User Execution"],c:0,w:"UX = User Experience (experiência do usuário): como o usuário interage e sente ao usar um produto digital."},
+{t:"Technology vocabulary",q:"'API' stands for:",o:["Application Programming Interface","Advanced Program Integration","Automated Processing Input","Application Procedure Index"],c:0,w:"API = Application Programming Interface: permite que sistemas diferentes se comuniquem."},
+{t:"Technology vocabulary",q:"'Bandwidth' in internet refers to:",o:["the maximum rate of data transfer across a network","the physical size of a cable","the number of connected devices","the cost of internet access"],c:0,w:"Bandwidth = largura de banda: capacidade máxima de transferência de dados em uma rede."},
+{t:"Reading — technology",q:"Read: 'Artificial intelligence is transforming industries by automating tasks previously performed by humans.' AI is:",o:["taking over tasks humans used to do","replacing all workers immediately","reducing internet usage","increasing manual labor"],c:0,w:"'Automating tasks previously performed by humans' = automatizando tarefas antes feitas por humanos."},
+{t:"Reading — technology",q:"'Data privacy has become a major concern as companies collect increasing amounts of personal information.' The text says data privacy:",o:["is increasingly important","is no longer relevant","has been solved","only affects governments"],c:0,w:"'Major concern' = preocupação importante. Privacy is increasingly relevant as data collection grows."},
+{t:"Reading — technology",q:"'Start-ups face many challenges, including limited funding and fierce competition.' What challenges do start-ups face?",o:["Lack of money and strong competition","Too many employees","Government support issues only","International laws"],c:0,w:"'Limited funding' = pouco dinheiro / financiamento limitado. 'Fierce competition' = concorrência forte."},
+{t:"Reading — technology",q:"'The company was founded in 2005 and went public in 2010.' 'Went public' means:",o:["started selling shares on the stock market","became a government company","opened new offices","closed down"],c:0,w:"'Go public' = abrir capital na bolsa de valores (IPO)."},
+{t:"Grammar — technology context",q:"'Software ___ regularly to fix security issues.' Correct passive:",o:["should be updated","should update","must updating","is update"],c:0,w:"Modal passive: modal + be + past participle. 'Should be updated.'"},
+{t:"Grammar — technology context",q:"'By the time the app was launched, the team ___ for two years.' Correct form:",o:["had been working","was working","worked","has worked"],c:0,w:"Past Perfect Continuous: action ongoing before a specific past moment."},
+{t:"Grammar — technology context",q:"'The new system is ___ efficient ___ the old one.' Comparative:",o:["more / than","most / than","more / that","most / of"],c:0,w:"Comparative with long adjectives: more + adjective + than."},
+{t:"Prepositions",q:"'She is responsible ___ the database management.'",o:["for","of","to","with"],c:0,w:"Responsible for = responsável por."},
+{t:"Prepositions",q:"'The project was completed ___ time.'",o:["on","in","at","by"],c:0,w:"'On time' = no prazo, pontualmente."},
+{t:"Prepositions",q:"'He specializes ___ cybersecurity.'",o:["in","on","at","for"],c:0,w:"Specialize in = especializar-se em."},
+{t:"Modal verbs",q:"'You ___ submit the form before the deadline.' (obligation)",o:["must","might","could","should"],c:0,w:"Must = obrigação. Should = recomendação. Might = possibilidade."},
+{t:"Modal verbs",q:"'She ___ speak three languages.' (ability in the past)",o:["could","must","should","would"],c:0,w:"Could = habilidade no passado (era capaz de)."},
+{t:"Modal verbs",q:"'It ___ rain later. Bring an umbrella.' (possibility)",o:["might","must","will","shall"],c:0,w:"Might = possibilidade (pode ser que chova)."},
+{t:"Connectors",q:"'The project was late; ___, the client was understanding.' Correct connector:",o:["however","therefore","moreover","furthermore"],c:0,w:"However = entretanto, porém. Indicates contrast/concession."},
+{t:"Connectors",q:"'We need to reduce costs. ___, we must maintain quality.'",o:["However","Therefore","Moreover","Although"],c:0,w:"However = porém. Introduces contrasting information."},
+{t:"Connectors",q:"'She studied hard. ___, she passed the exam.'",o:["As a result","However","Although","Unless"],c:0,w:"As a result = como resultado. Introduces consequence."},
+{t:"False friends",q:"'Pretend' in English means:",o:["fingir (to fake)","pretender (to intend)","precisar (to need)","esperar (to wait)"],c:0,w:"False friend: 'pretend' = fingir (NOT pretender). 'I pretend I'm sick' = finjo estar doente."},
+{t:"False friends",q:"'Actually' in English means:",o:["na verdade / de fato","atualmente","eventualmente","normalmente"],c:0,w:"False friend: 'actually' = na verdade / de fato (NOT atualmente). 'Currently' = atualmente."},
+{t:"False friends",q:"'Eventually' in English means:",o:["eventualmente = com o tempo / por fim","na verdade","provavelmente","normalmente"],c:0,w:"'Eventually' = no fim das contas, com o tempo (NOT às vezes como em português)."},
+{t:"False friends",q:"'Sensible' in English means:",o:["sensato / razoável","sensível","sentimental","sentido"],c:0,w:"'Sensible' = sensato (NOT sensível). 'Sensitive' = sensível em inglês."},
+{t:"Reading — general",q:"'The government announced new measures to reduce carbon emissions.' The government wants to:",o:["decrease pollution from carbon","increase energy prices","promote fossil fuels","reduce recycling"],c:0,w:"Carbon emissions = emissões de carbono. Reduce = diminuir. The government wants to reduce pollution."},
+{t:"Reading — general",q:"'Despite being expensive, electric cars are becoming more popular.' Why might people still buy them?",o:["They are becoming more popular, likely for environmental/fuel savings reasons","They are cheap","They are faster than regular cars","They require less maintenance"],c:0,w:"'Despite being expensive' shows the cost is a drawback, yet popularity grows — implying other benefits."},
+{t:"Reading — general",q:"'The startup raised $10 million in its Series A funding round.' This means the startup:",o:["received investment money","lost $10 million","went bankrupt","was acquired"],c:0,w:"'Raised funding' = captou investimento. Series A = primeira rodada significativa de investimento."}
+]},
+
+// ══════════════════════════════════════════════════════
+// 4 — FÍSICA (50q)
+// ══════════════════════════════════════════════════════
+{name:"Física",ico:"⚡",bg:"#2a0a0a",ac:"#f44336",
+q:[
+{t:"Cinemática",q:"Um carro percorre 120 km em 2h. Sua velocidade média é:",o:["60 km/h","240 km/h","30 km/h","120 km/h"],c:0,w:"v=d/t=120/2=60 km/h."},
+{t:"Cinemática",q:"(FATEC) Um móvel parte do repouso com aceleração 4 m/s². Sua velocidade após 5s é:",o:["20 m/s","10 m/s","25 m/s","4 m/s"],c:0,w:"v=v₀+at=0+4×5=20 m/s."},
+{t:"Cinemática",q:"Espaço percorrido com v=10 m/s e a=2 m/s² em 3s (MUV, partindo do repouso):",o:["39 m","30 m","9 m","45 m"],c:0,w:"s=v₀t+at²/2=0+10×3+2×9/2=30+9=39m. Mas v₀=0 e a=2: s=0+2×9/2=9m. Revisando: v₀=10, a=2, t=3: s=10×3+2×9/2=30+9=39m."},
+{t:"Cinemática",q:"Um objeto cai livre do repouso (g=10m/s²). Velocidade após 3s:",o:["30 m/s","10 m/s","15 m/s","3 m/s"],c:0,w:"v=g×t=10×3=30 m/s."},
+{t:"Cinemática",q:"Velocidade de 72 km/h em m/s equivale a:",o:["20 m/s","72 m/s","7,2 m/s","36 m/s"],c:0,w:"72÷3,6=20 m/s."},
+{t:"Dinâmica",q:"(FATEC) Segunda Lei de Newton: F=ma. Força de 30N sobre massa de 5kg. Aceleração=",o:["6 m/s²","25 m/s²","150 m/s²","0,17 m/s²"],c:0,w:"a=F/m=30/5=6 m/s²."},
+{t:"Dinâmica",q:"Um objeto de 10 kg repousa numa superfície. Seu peso (g=10) é:",o:["100 N","10 N","1000 N","0,1 N"],c:0,w:"P=mg=10×10=100 N."},
+{t:"Dinâmica",q:"A Primeira Lei de Newton (inércia) afirma que:",o:["Um corpo em repouso ou MRU permanece assim se a força resultante for zero","Força=massa×aceleração","A cada ação há reação igual e oposta","Todo corpo cai com aceleração constante"],c:0,w:"1ª Lei = Inércia: sem força resultante, o corpo mantém seu estado (repouso ou MRU)."},
+{t:"Dinâmica",q:"A Terceira Lei de Newton (ação e reação) afirma:",o:["Para toda ação há reação de mesma intensidade e sentido oposto","F=ma","Corpo em repouso fica em repouso","Força resultante é zero no equilíbrio"],c:0,w:"3ª Lei: ação e reação — forças iguais em módulo, mesma direção, sentidos opostos, em corpos diferentes."},
+{t:"Dinâmica",q:"Atrito cinético é a força que:",o:["Opõe-se ao movimento de um objeto deslizando sobre superfície","Aumenta a velocidade","É sempre maior que o atrito estático","Atua apenas em objetos parados"],c:0,w:"Atrito cinético: força de resistência que se opõe ao movimento de deslizamento."},
+{t:"Trabalho e energia",q:"Trabalho W = F×d×cos θ. F=10N, d=5m, θ=0°. W=",o:["50 J","0 J","25 J","100 J"],c:0,w:"cos0°=1. W=10×5×1=50J."},
+{t:"Trabalho e energia",q:"Energia cinética: Ec = mv²/2. m=2kg, v=10m/s. Ec=",o:["100 J","20 J","200 J","50 J"],c:0,w:"Ec=2×100/2=100J."},
+{t:"Trabalho e energia",q:"Energia potencial gravitacional: Ep=mgh. m=5kg, g=10, h=3m. Ep=",o:["150 J","50 J","15 J","500 J"],c:0,w:"Ep=5×10×3=150J."},
+{t:"Trabalho e energia",q:"Conservação de energia: ao cair, energia potencial se converte em:",o:["Energia cinética","Energia elétrica","Energia química","Energia sonora"],c:0,w:"Conservação mecânica: Ep → Ec durante queda livre (sem atrito)."},
+{t:"Trabalho e energia",q:"Potência P=W/t. W=600J em t=3s. P=",o:["200 W","1800 W","2 W","0,005 W"],c:0,w:"P=600/3=200W."},
+{t:"Termologia",q:"Conversão: 27°C em Kelvin:",o:["300 K","27 K","373 K","254 K"],c:0,w:"K=°C+273=27+273=300K."},
+{t:"Termologia",q:"100°C em Fahrenheit: F = 1,8C+32:",o:["212°F","100°F","373°F","180°F"],c:0,w:"F=1,8×100+32=180+32=212°F."},
+{t:"Termologia",q:"Dilatação linear: ΔL=L₀αΔT. L₀=2m, α=10⁻⁵/°C, ΔT=100°C. ΔL=",o:["2×10⁻³ m","2×10⁻² m","2×10⁻⁴ m","2 m"],c:0,w:"ΔL=2×10⁻⁵×100=2×10⁻³m."},
+{t:"Termologia",q:"Calor sensível: Q=mcΔT. m=2kg, c=4200 J/kg°C, ΔT=10°C. Q=",o:["84000 J","420 J","21000 J","8400 J"],c:0,w:"Q=2×4200×10=84000J."},
+{t:"Termologia",q:"(FATEC) O processo de transmissão de calor por contato direto entre partículas é:",o:["Condução","Convecção","Irradiação","Evaporação"],c:0,w:"Condução = transmissão de calor por contato entre partículas (ex: cabo de metal aquecido)."},
+{t:"Óptica",q:"A velocidade da luz no vácuo é aproximadamente:",o:["3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","3×10⁴ m/s"],c:0,w:"c≈3×10⁸ m/s ≈ 300.000 km/s."},
+{t:"Óptica",q:"Índice de refração n=c/v. n=1,5 para vidro. Velocidade no vidro=",o:["2×10⁸ m/s","3×10⁸ m/s","1,5×10⁸ m/s","4,5×10⁸ m/s"],c:0,w:"v=c/n=3×10⁸/1,5=2×10⁸ m/s."},
+{t:"Óptica",q:"Espelhos côncavos geram imagens reais quando o objeto está:",o:["Além do centro de curvatura","No foco","Entre foco e espelho","No infinito"],c:0,w:"Objeto além do centro → imagem real, invertida e menor. No foco → imagem no infinito."},
+{t:"Óptica",q:"Lentes convergentes (convexas) são usadas para corrigir:",o:["Hipermetropia","Miopia","Astigmatismo","Daltonismo"],c:0,w:"Hipermetropia (dificuldade de ver de perto) → lente convergente (converge a luz antes da retina)."},
+{t:"Óptica",q:"A refração da luz ocorre quando:",o:["A luz muda de meio e tem sua velocidade alterada, desviando de direção","A luz é refletida numa superfície polida","A luz é absorvida por um objeto","A luz passa pelo vácuo"],c:0,w:"Refração = mudança de meio → mudança de velocidade → mudança de direção."},
+{t:"Eletricidade",q:"Lei de Ohm: V=R×I. R=10Ω, I=2A. V=",o:["20 V","5 V","0,2 V","200 V"],c:0,w:"V=10×2=20V."},
+{t:"Eletricidade",q:"Resistores em série: R_total=R₁+R₂. R₁=3Ω, R₂=5Ω. R_total=",o:["8Ω","2Ω","15Ω","4Ω"],c:0,w:"Série: soma direta. 3+5=8Ω."},
+{t:"Eletricidade",q:"Resistores em paralelo: 1/R=1/R₁+1/R₂. R₁=4Ω, R₂=4Ω. R_eq=",o:["2Ω","8Ω","4Ω","1Ω"],c:0,w:"1/R=1/4+1/4=2/4→R=2Ω."},
+{t:"Eletricidade",q:"Potência elétrica: P=V×I. V=110V, I=2A. P=",o:["220 W","55 W","220 J","108 W"],c:0,w:"P=110×2=220W."},
+{t:"Eletricidade",q:"Energia elétrica consumida: E=P×t. P=100W durante 5h. E=",o:["500 Wh","20 Wh","100 Wh","5 Wh"],c:0,w:"E=100×5=500Wh=0,5kWh."},
+{t:"Ondulatória",q:"Relação entre velocidade, frequência e comprimento de onda: v=λf. v=340m/s, f=170Hz. λ=",o:["2 m","0,5 m","57800 m","1 m"],c:0,w:"λ=v/f=340/170=2m."},
+{t:"Ondulatória",q:"O som é uma onda:",o:["Mecânica longitudinal (precisa de meio material)","Eletromagnética transversal","Que se propaga no vácuo","Sempre visível"],c:0,w:"Som = onda mecânica longitudinal. Não se propaga no vácuo (precisa de meio material)."},
+{t:"Ondulatória",q:"A luz é uma onda:",o:["Eletromagnética transversal (propaga-se no vácuo)","Mecânica longitudinal","Sonora","Que precisa de ar para se propagar"],c:0,w:"Luz = onda eletromagnética transversal. Propaga-se no vácuo (c≈3×10⁸ m/s)."},
+{t:"Ondulatória",q:"Qual cor do espectro visível tem maior frequência?",o:["Violeta","Vermelho","Verde","Laranja"],c:0,w:"Violeta tem maior frequência (e maior energia). Vermelho tem menor frequência."},
+{t:"Gravitação",q:"(FATEC) A força gravitacional entre dois corpos é proporcional ao produto das massas e inversamente proporcional ao:",o:["Quadrado da distância entre eles","Cubo da distância","Distância entre eles","Produto das velocidades"],c:0,w:"Lei de Newton: F=Gm₁m₂/r². Inversamente proporcional ao quadrado da distância."},
+{t:"Gravitação",q:"Na Lua (g=1,6 m/s²), um objeto de 10kg tem peso:",o:["16 N","100 N","160 N","10 N"],c:0,w:"P=mg=10×1,6=16N. A massa é 10kg em qualquer lugar."},
+{t:"Hidrostática",q:"Pressão hidrostática: P=ρgh. ρ=1000kg/m³, g=10, h=5m. P=",o:["50000 Pa","5000 Pa","500 Pa","50 Pa"],c:0,w:"P=1000×10×5=50000Pa=50kPa."},
+{t:"Hidrostática",q:"Princípio de Arquimedes: um corpo imerso num fluido sofre:",o:["Empuxo igual ao peso do fluido deslocado","Aumento de peso","Diminuição do volume","Aceleração constante"],c:0,w:"Empuxo = peso do volume de fluido deslocado pelo objeto imerso."},
+{t:"Física moderna",q:"No efeito fotoelétrico, para que elétrons sejam ejetados de um metal:",o:["A frequência da luz deve ser maior que a frequência de limiar do metal","A intensidade da luz deve ser alta","A luz deve ser vermelha","A temperatura deve ser alta"],c:0,w:"Efeito fotoelétrico (Einstein): depende da frequência (E=hf), não da intensidade."},
+{t:"Física moderna",q:"E=mc² é a equação de:",o:["Equivalência massa-energia (Einstein)","Energia cinética","Lei da gravitação","Pressão em fluidos"],c:0,w:"E=mc²: equivalência entre massa e energia. Base da relatividade especial de Einstein."},
+{t:"Física moderna",q:"Fissão nuclear é o processo em que:",o:["Um núcleo pesado se divide em núcleos menores liberando energia","Dois núcleos leves se unem","Um elétron é emitido","Um próton é absorvido"],c:0,w:"Fissão: divisão de núcleo pesado (ex: urânio) → núcleos menores + energia (usinas nucleares)."},
+{t:"Física moderna",q:"Fusão nuclear é o processo que ocorre no:",o:["Sol (fusão de hidrogênio em hélio)","Usinas nucleares comuns","Interior da Terra","Baterias de lítio"],c:0,w:"Fusão: dois núcleos leves se unem formando núcleo mais pesado + energia. Ocorre no Sol."},
+{t:"Cinemática avançada",q:"(FATEC) Gráfico v×t de MRU (linha horizontal). A área abaixo do gráfico representa:",o:["O espaço percorrido","A aceleração","A força","A energia"],c:0,w:"Em gráfico v×t, a área = espaço percorrido. No MRU a velocidade é constante."},
+{t:"Cinemática avançada",q:"No MUV, o gráfico v×t é uma reta inclinada. A inclinação (coeficiente angular) representa:",o:["A aceleração","A velocidade","O espaço","A força"],c:0,w:"No gráfico v×t, Δv/Δt = aceleração = coeficiente angular da reta."},
+{t:"Oscilações",q:"Período de um pêndulo simples de comprimento L=1m (g=10): T=2π√(L/g). T≈",o:["2 s","1 s","π s","10 s"],c:0,w:"T=2π√(1/10)=2π×0,316≈2s (usando π≈3,14 e √0,1≈0,316)."},
+{t:"Eletromagnetismo",q:"A força elétrica entre duas cargas é dada pela Lei de Coulomb: F=kq₁q₂/r². Se a distância dobra, a força:",o:["Fica 4× menor","Fica 2× menor","Fica 4× maior","Não muda"],c:0,w:"F∝1/r². Se r→2r: F→F/4. A força fica 4 vezes menor."},
+{t:"Eletromagnetismo",q:"Um fio percorrido por corrente elétrica gera:",o:["Campo magnético ao redor do fio","Campo elétrico apenas","Radiação visível","Calor apenas"],c:0,w:"Corrente elétrica gera campo magnético (Lei de Ampère / experimento de Oersted)."},
+{t:"Eletromagnetismo",q:"O transformador funciona com base em:",o:["Indução eletromagnética (corrente alternada)","Corrente contínua apenas","Efeito fotoelétrico","Fissão nuclear"],c:0,w:"Transformador usa indução eletromagnética para aumentar ou diminuir a tensão da corrente alternada."},
+{t:"Eletromagnetismo",q:"Qual dispositivo converte energia elétrica em mecânica?",o:["Motor elétrico","Gerador","Resistor","Capacitor"],c:0,w:"Motor elétrico: converte energia elétrica em mecânica (rotação). Gerador faz o inverso."}
+]},
+
+// ══════════════════════════════════════════════════════
+// 5 — QUÍMICA (50q)
+// ══════════════════════════════════════════════════════
+{name:"Química",ico:"🧪",bg:"#1a0a3a",ac:"#9c27b0",
+q:[
+{t:"Estrutura atômica",q:"O número atômico de um elemento representa:",o:["Número de prótons no núcleo","Número de nêutrons","Número de massa","Número de elétrons na camada mais externa"],c:0,w:"Número atômico (Z) = número de prótons. Determina a identidade do elemento."},
+{t:"Estrutura atômica",q:"O elemento ²³₁₁Na tem:",o:["11 prótons e 12 nêutrons","23 prótons e 11 nêutrons","11 prótons e 23 nêutrons","12 prótons e 11 nêutrons"],c:0,w:"Z=11 prótons. A=23. Nêutrons=A−Z=23−11=12."},
+{t:"Estrutura atômica",q:"Isótopos são átomos do mesmo elemento com:",o:["Mesmo Z, diferentes números de nêutrons (e massa)","Mesma massa e diferentes prótons","Diferentes elétrons e prótons","Mesmo número de massa"],c:0,w:"Isótopos: mesmo Z (mesmo elemento), diferentes N (nêutrons) → diferente número de massa."},
+{t:"Estrutura atômica",q:"A camada de valência é:",o:["A última camada eletrônica — determina propriedades químicas","A primeira camada","O núcleo atômico","O orbital mais interno"],c:0,w:"Camada de valência = última camada. Elétrons nela determinam ligações e reatividade."},
+{t:"Estrutura atômica",q:"Elemento com Z=8 (Oxigênio) tem distribuição eletrônica:",o:["2,6","2,8","2,4","4,4"],c:0,w:"8 elétrons: 1ª camada (max 2) = 2; 2ª camada = 6. Total = 2,6."},
+{t:"Tabela periódica",q:"Os elementos do Grupo 18 (família) são os gases nobres, caracterizados por:",o:["Camada de valência completa e extrema inatividade química","Alta reatividade","Serem metais","Formarem muitos compostos"],c:0,w:"Gases nobres: camada de valência completa (8e⁻, exceto He com 2). São praticamente inertes."},
+{t:"Tabela periódica",q:"Metais alcalinos (Grupo 1) têm quantos elétrons na camada de valência?",o:["1","2","7","0"],c:0,w:"Grupo 1: 1 elétron na camada de valência. Alta reatividade (doam facilmente esse elétron)."},
+{t:"Tabela periódica",q:"Halogênios (Grupo 17) têm na camada de valência:",o:["7 elétrons","1 elétron","8 elétrons","6 elétrons"],c:0,w:"Grupo 17: 7 elétrons na valência. Precisam de 1 elétron para completar o octeto — muito reativos."},
+{t:"Tabela periódica",q:"Da esquerda para direita num período, a eletronegatividade:",o:["Aumenta","Diminui","Permanece igual","Oscila"],c:0,w:"Eletronegatividade aumenta da esquerda para a direita (mais prótons = maior atração dos elétrons)."},
+{t:"Tabela periódica",q:"O raio atômico de cima para baixo num grupo:",o:["Aumenta (mais camadas eletrônicas)","Diminui","Permanece igual","Varia aleatoriamente"],c:0,w:"De cima para baixo: mais camadas eletrônicas → maior raio atômico."},
+{t:"Ligações químicas",q:"Ligação iônica ocorre entre:",o:["Metal e não-metal (transferência de elétrons)","Dois não-metais (compartilhamento)","Dois metais","Metal e gás nobre"],c:0,w:"Iônica: metal doa elétrons → cátion; não-metal recebe → ânion. Formam sal (ex: NaCl)."},
+{t:"Ligações químicas",q:"Ligação covalente ocorre por:",o:["Compartilhamento de pares de elétrons entre não-metais","Transferência de elétrons","Atração entre íons","Forças de van der Waals apenas"],c:0,w:"Covalente: dois não-metais compartilham elétrons (ex: H₂, H₂O, CO₂)."},
+{t:"Ligações químicas",q:"Ligação metálica é responsável por propriedades como:",o:["Condutividade elétrica e ductilidade dos metais","Fragilidade dos metais","Alta volatilidade","Insolubilidade em água"],c:0,w:"Ligação metálica: elétrons deslocalizados ('mar de elétrons') → condutividade e maleabilidade."},
+{t:"Funções inorgânicas",q:"Ácido de Arrhenius é substância que em água libera como único cátion:",o:["H⁺ (próton)","OH⁻","Na⁺","Cl⁻"],c:0,w:"Ácido de Arrhenius: ioniza-se em água liberando H⁺ como único cátion."},
+{t:"Funções inorgânicas",q:"Base de Arrhenius é substância que em água libera como único ânion:",o:["OH⁻","H⁺","Cl⁻","SO₄²⁻"],c:0,w:"Base de Arrhenius: dissocia-se liberando OH⁻ como único ânion."},
+{t:"Funções inorgânicas",q:"Sal é formado pela reação entre:",o:["Ácido + base (neutralização)","Dois ácidos","Metal + ácido apenas","Dois sólidos"],c:0,w:"Sal = produto da reação de neutralização entre ácido e base. Também: cátion básico + ânion ácido."},
+{t:"Funções inorgânicas",q:"Óxido básico reage com água formando:",o:["Base (ex: CaO + H₂O → Ca(OH)₂)","Ácido","Sal","Outro óxido"],c:0,w:"Óxido básico (de metal ativo) + H₂O → base. Ex: Na₂O + H₂O → 2NaOH."},
+{t:"Funções inorgânicas",q:"(FATEC) O pH de uma solução ácida é:",o:["Menor que 7","Igual a 7","Maior que 7","Igual a 14"],c:0,w:"pH<7: ácido. pH=7: neutro. pH>7: básico. pH=-log[H⁺]."},
+{t:"Reações químicas",q:"Reação de síntese (combinação) é do tipo:",o:["A + B → AB","AB → A + B","AB + CD → AD + CB","A + BC → AC + B"],c:0,w:"Síntese: dois ou mais reagentes formam um único produto. A+B→AB."},
+{t:"Reações químicas",q:"Na equação H₂ + Cl₂ → 2HCl, o coeficiente do HCl é 2 por causa da:",o:["Lei de Conservação da Massa (balanceamento)","Lei das proporções definidas","Teoria cinética","Equilíbrio químico"],c:0,w:"Balanceamento garante conservação de massa e átomos. 2H+2Cl→2HCl."},
+{t:"Reações químicas",q:"Reação exotérmica é aquela que:",o:["Libera energia para o ambiente (ΔH<0)","Absorve energia do ambiente","Não envolve troca de energia","Ocorre apenas com catalisador"],c:0,w:"Exotérmica: ΔH<0 (libera calor). Endotérmica: ΔH>0 (absorve calor)."},
+{t:"Estequiometria",q:"Na reação 2H₂+O₂→2H₂O, quantas moléculas de H₂O são formadas com 4 moléculas de H₂?",o:["4","2","8","1"],c:0,w:"Proporção 2H₂:2H₂O=1:1. 4H₂→4H₂O."},
+{t:"Estequiometria",q:"Massa molar do H₂O (H=1, O=16):",o:["18 g/mol","16 g/mol","2 g/mol","34 g/mol"],c:0,w:"H₂O: 2×1+16=18 g/mol."},
+{t:"Estequiometria",q:"Massa molar do CO₂ (C=12, O=16):",o:["44 g/mol","28 g/mol","32 g/mol","56 g/mol"],c:0,w:"CO₂: 12+2×16=44 g/mol."},
+{t:"Estequiometria",q:"Quantas moles em 36g de H₂O (M=18)?",o:["2 mol","18 mol","0,5 mol","36 mol"],c:0,w:"n=m/M=36/18=2 mol."},
+{t:"Estequiometria",q:"Número de moléculas em 1 mol (Avogadro):",o:["6,02×10²³","1×10²³","1×10²⁴","6,02×10²⁴"],c:0,w:"Número de Avogadro: 6,02×10²³ partículas/mol."},
+{t:"Soluções",q:"Concentração molar: C=n/V. n=2 mol, V=0,5L. C=",o:["4 mol/L","1 mol/L","0,25 mol/L","0,5 mol/L"],c:0,w:"C=2/0,5=4 mol/L."},
+{t:"Soluções",q:"Diluição: C₁V₁=C₂V₂. C₁=4M, V₁=250mL. V₂=1000mL. C₂=",o:["1 M","2 M","0,5 M","4 M"],c:0,w:"C₂=4×250/1000=1M."},
+{t:"Soluções",q:"Uma solução saturada é aquela que:",o:["Contém a quantidade máxima de soluto dissolvida a dada temperatura","Tem excesso de solvente","Está sendo aquecida","Tem pH=7"],c:0,w:"Saturada: máximo de soluto dissolvido naquela temperatura. Qualquer adição precipita."},
+{t:"Equilíbrio químico",q:"Princípio de Le Chatelier: ao aumentar a concentração de um reagente, o equilíbrio:",o:["Desloca-se no sentido de consumir o reagente adicionado","Não muda","Desloca-se para os reagentes","O sistema se desfaz"],c:0,w:"Le Chatelier: perturbação → sistema reage para minimizar o efeito. Mais reagente → mais produto."},
+{t:"Eletroquímica",q:"Oxidação é:",o:["Perda de elétrons (aumento do número de oxidação)","Ganho de elétrons","Redução de carga","Formação de íons negativos"],c:0,w:"Oxidação = perde elétrons = número de oxidação aumenta. Redução = ganha elétrons."},
+{t:"Eletroquímica",q:"Em uma pilha/célula galvânica, no ânodo ocorre:",o:["Oxidação","Redução","Eletrólise","Dissolução iônica"],c:0,w:"Pilha: ânodo = oxidação (O); cátodo = redução (R). Mnemônico: ORCA."},
+{t:"Química orgânica",q:"Hidrocarboneto com apenas ligações simples C-C é classificado como:",o:["Alcano","Alceno","Alcino","Aromático"],c:0,w:"Alcanos: apenas ligações simples (C-C). Fórmula CₙH₂ₙ₊₂. Ex: metano CH₄."},
+{t:"Química orgânica",q:"Alceno tem como característica:",o:["Ligação dupla C=C","Apenas ligações simples","Ligação tripla C≡C","Anel benzênico"],c:0,w:"Alcenos: uma ligação dupla C=C. Fórmula CₙH₂ₙ. Ex: eteno C₂H₄."},
+{t:"Química orgânica",q:"Álcoois têm o grupo funcional:",o:["−OH (hidroxila)","−COOH (carboxila)","−CHO (aldeído)","−NH₂ (amina)"],c:0,w:"Álcoois: grupo funcional −OH (hidroxila) ligado a carbono saturado. Ex: etanol C₂H₅OH."},
+{t:"Química orgânica",q:"(FATEC) Ácidos carboxílicos têm o grupo funcional:",o:["−COOH","−OH","−CHO","−CO−"],c:0,w:"Ácidos carboxílicos: −COOH (carboxila). Ex: ácido acético CH₃COOH (vinagre)."},
+{t:"Química orgânica",q:"Fermentação alcoólica é a transformação de:",o:["Glicose em etanol+CO₂ por leveduras","Etanol em ácido acético","CO₂ em glicose","Gordura em álcool"],c:0,w:"C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂. Base da produção de etanol combustível e bebidas."},
+{t:"Química orgânica",q:"Petróleo é uma mistura de:",o:["Hidrocarbonetos (alcanos, cicloalcanos, aromáticos)","Álcoois e ésteres","Ácidos e bases","Sais e óxidos"],c:0,w:"Petróleo = mistura complexa de hidrocarbonetos. Refinamento separa por destilação fracionada."},
+{t:"Química ambiental",q:"(FATEC) O principal gás responsável pelo efeito estufa é:",o:["CO₂ (dióxido de carbono)","O₂","N₂","H₂"],c:0,w:"CO₂ é o principal gás estufa por concentração. CH₄ e N₂O são mais potentes mas menos concentrados."},
+{t:"Química ambiental",q:"A chuva ácida é causada principalmente por:",o:["SO₂ e NOₓ que reagem com vapor d'água formando ácidos","CO₂ e O₂","Poeira e partículas","NH₃"],c:0,w:"SO₂ (combustão de carvão) + NOₓ (veículos) + H₂O → H₂SO₄ e HNO₃ → chuva ácida."},
+{t:"Radioatividade",q:"Emissão alfa (α) consiste em:",o:["Emissão de partícula com 2 prótons e 2 nêutrons (núcleo de He)","Emissão de elétron","Emissão de fóton de alta energia","Captura de pósitron"],c:0,w:"Radiação α = partícula α = núcleo de ⁴He (2p+2n). Menor penetração dos três tipos."},
+{t:"Radioatividade",q:"Meia-vida é o tempo em que:",o:["Metade dos átomos radioativos se desintegram","Toda a amostra se desintegra","O elemento muda de grupo","A radiação dobra de intensidade"],c:0,w:"Meia-vida (t₁/₂): tempo para metade dos núcleos se desintegrarem. Constante para cada isótopo."},
+{t:"Termoquímica",q:"Entalpia de formação (ΔHf) do elemento em seu estado padrão é:",o:["Zero por definição","Sempre positiva","Sempre negativa","Igual à entalpia de combustão"],c:0,w:"Por convenção, a entalpia de formação dos elementos em seus estados padrão é zero."}
+]},
+
+// ══════════════════════════════════════════════════════
+// 6 — BIOLOGIA (50q)
+// ══════════════════════════════════════════════════════
+{name:"Biologia",ico:"🧬",bg:"#0a2a1a",ac:"#8bc34a",
+q:[
+{t:"Citologia",q:"A unidade estrutural e funcional dos seres vivos é:",o:["A célula","O órgão","O tecido","O organismo"],c:0,w:"Teoria celular: a célula é a unidade básica de todos os seres vivos."},
+{t:"Citologia",q:"Diferença entre célula procariótica e eucariótica:",o:["Procariota não tem núcleo delimitado por membrana; eucariota tem","Procariota tem mitocôndria; eucariota não","Eucariota é mais simples","São idênticas"],c:0,w:"Procariota (bactérias): sem membrana nuclear. Eucariota (animais, plantas, fungos): com núcleo delimitado."},
+{t:"Citologia",q:"A mitocôndria é responsável por:",o:["Respiração celular aeróbia (produção de ATP)","Fotossíntese","Síntese de proteínas","Digestão intracelular"],c:0,w:"Mitocôndria = usina de energia: realiza respiração aeróbia produzindo ATP."},
+{t:"Citologia",q:"O cloroplasto realiza:",o:["Fotossíntese (transforma luz em energia química)","Respiração celular","Síntese de lipídios","Divisão celular"],c:0,w:"Cloroplasto: presente em células vegetais. Realiza fotossíntese usando luz solar."},
+{t:"Citologia",q:"O ribossomo é o orgânulo responsável por:",o:["Síntese de proteínas","Produção de ATP","Fotossíntese","Digestão de organelas velhas"],c:0,w:"Ribossomo: traduz o RNA mensageiro em proteínas. Presente em todos os seres vivos."},
+{t:"Citologia",q:"A membrana plasmática é responsável por:",o:["Controlar a entrada e saída de substâncias na célula","Realizar fotossíntese","Sintetizar proteínas","Armazenar energia"],c:0,w:"Membrana plasmática: permeabilidade seletiva. Controla o que entra e sai da célula."},
+{t:"Citologia",q:"Osmose é o transporte de:",o:["Água do meio menos concentrado para o mais concentrado através de membrana semipermeável","Proteínas por difusão","Glicose por transporte ativo","Íons contra o gradiente"],c:0,w:"Osmose: difusão de água através de membrana semipermeável — do hipotônico para o hipertônico."},
+{t:"Divisão celular",q:"Mitose produz:",o:["Duas células-filhas geneticamente idênticas à célula-mãe","Quatro células haploides","Células com metade dos cromossomos","Gametas"],c:0,w:"Mitose: divisão de crescimento. 1 célula → 2 células idênticas (mesma quantidade de cromossomos)."},
+{t:"Divisão celular",q:"Meiose é responsável por:",o:["Produzir gametas com metade dos cromossomos (haploides)","Crescimento celular normal","Regeneração de tecidos","Produzir células somáticas"],c:0,w:"Meiose: divisão reducional. 1 célula diploide (2n) → 4 células haploides (n) = gametas."},
+{t:"Divisão celular",q:"Câncer é caracterizado por:",o:["Divisão celular descontrolada formando tumor","Falta de divisão celular","Morte celular excessiva","Diferenciação celular acelerada"],c:0,w:"Câncer: mutações que ativam proto-oncogenes ou inativam genes supressores → divisão descontrolada."},
+{t:"Genética",q:"DNA é formado por nucleotídeos compostos de:",o:["Fosfato + açúcar (desoxirribose) + base nitrogenada","Apenas aminoácidos","Lipídios + proteínas","RNA + proteínas"],c:0,w:"Nucleotídeo do DNA: grupo fosfato + desoxirribose + base (A, T, C ou G)."},
+{t:"Genética",q:"A regra de Chargaff estabelece que no DNA:",o:["A=T e C≡G (bases se emparelham complementarmente)","A=C e T=G","Todas as bases são iguais","RNA e DNA têm as mesmas bases"],c:0,w:"Chargaff: Adenina=Timina; Citosina=Guanina. Emparelhamento específico na dupla hélice."},
+{t:"Genética",q:"Genótipo AA é:",o:["Homozigoto dominante","Heterozigoto","Homozigoto recessivo","Hemizigoto"],c:0,w:"AA = homozigoto dominante (dois alelos dominantes iguais)."},
+{t:"Genética",q:"No cruzamento Aa × Aa, a proporção fenotípica esperada é:",o:["3 dominante : 1 recessivo","1:1","1:2:1","Todos dominantes"],c:0,w:"Aa×Aa: 1/4 AA, 2/4 Aa, 1/4 aa → fenotipicamente 3 dominantes : 1 recessivo."},
+{t:"Genética",q:"Mutação é:",o:["Alteração na sequência de DNA que pode afetar a expressão gênica","Sempre letal","Sempre benéfica","Transmitida apenas por vírus"],c:0,w:"Mutação: alteração na sequência de bases do DNA. Pode ser neutra, benéfica ou prejudicial."},
+{t:"Genética",q:"(FATEC) A síndrome de Down é causada por:",o:["Trissomia do cromossomo 21 (47 cromossomos no total)","Monossomia do cromossomo X","Deleção no cromossomo 5","Inversão cromossômica"],c:0,w:"Síndrome de Down (trissomia 21): três cópias do cromossomo 21 → 47 cromossomos."},
+{t:"Ecologia",q:"Cadeia alimentar começa sempre com:",o:["Produtor (vegetal autótrofo)","Consumidor primário","Decompositor","Carnívoro"],c:0,w:"Cadeia: Produtor → Consumidor 1° → Consumidor 2° → Decompositor. Energia flui dos produtores."},
+{t:"Ecologia",q:"Em cada nível trófico, a energia disponível para o próximo nível é aproximadamente:",o:["10%","50%","90%","100%"],c:0,w:"Regra dos 10%: apenas ~10% da energia de um nível trófico passa para o próximo."},
+{t:"Ecologia",q:"Simbiose mutualística é aquela em que:",o:["Ambos os organismos se beneficiam (ex: fungos e algas no líquen)","Um se beneficia e o outro é prejudicado","Um se beneficia e o outro é neutro","Ambos são prejudicados"],c:0,w:"Mutualismo: os dois organismos se beneficiam (ex: abelha e flor, bactérias intestinais e humanos)."},
+{t:"Ecologia",q:"(FATEC) O principal responsável pela destruição da camada de ozônio é:",o:["CFC (clorofluorcarboneto)","CO₂","CH₄","SO₂"],c:0,w:"CFCs liberam cloro na estratosfera, que catalisa a destruição do O₃ (ozônio)."},
+{t:"Ecologia",q:"Bioma brasileiro de maior biodiversidade:",o:["Amazônia","Cerrado","Mata Atlântica","Caatinga"],c:0,w:"Amazônia: maior biodiversidade do planeta. Mata Atlântica: mais ameaçada (restam ~12% da cobertura original)."},
+{t:"Fisiologia",q:"Qual órgão produz bile para auxiliar na digestão de gorduras?",o:["Fígado","Pâncreas","Estômago","Rim"],c:0,w:"Fígado produz bile (armazenada na vesícula biliar), que emulsiona gorduras no intestino delgado."},
+{t:"Fisiologia",q:"O pâncreas produz insulina, hormônio que:",o:["Reduz a glicemia (glicose no sangue) estimulando sua absorção pelas células","Aumenta a glicemia","Regula pressão arterial","Controla temperatura corporal"],c:0,w:"Insulina: produzida pelas células β do pâncreas. Facilita a entrada de glicose nas células → reduz glicemia."},
+{t:"Fisiologia",q:"A função dos rins é:",o:["Filtrar o sangue, eliminar toxinas e regular equilíbrio hidroeletrolítico","Produzir bile","Realizar trocas gasosas","Bombar sangue"],c:0,w:"Rins: filtração do sangue, excreção de ureia e outras toxinas, regulação do balanço hídrico e salino."},
+{t:"Fisiologia",q:"Glóbulos vermelhos (eritrócitos) transportam:",o:["O₂ ligado à hemoglobina","CO₂ apenas","Anticorpos","Hormônios"],c:0,w:"Eritrócitos: transportam O₂ via hemoglobina (proteína com Fe²⁺). Também transportam CO₂ de volta."},
+{t:"Fisiologia",q:"O sistema nervoso central é formado por:",o:["Encéfalo (cérebro, cerebelo, tronco) e medula espinhal","Apenas o cérebro","Nervos periféricos","Coração e pulmões"],c:0,w:"SNC: encéfalo + medula espinhal. SNP: nervos e gânglios fora do SNC."},
+{t:"Evolução",q:"A Teoria da Evolução por Seleção Natural foi proposta por:",o:["Charles Darwin (e Alfred Wallace)","Gregor Mendel","Louis Pasteur","Jean-Baptiste Lamarck"],c:0,w:"Darwin (e Wallace independentemente): seleção natural — organismos mais adaptados sobrevivem e reproduzem mais."},
+{t:"Evolução",q:"O mecanismo central da evolução Darwiniana é:",o:["Seleção natural: sobrevivem os mais adaptados ao ambiente","Herança de caracteres adquiridos","Mutação dirigida","Criação especial"],c:0,w:"Seleção natural: variação + hereditariedade + pressão ambiental → sobrevivência diferencial."},
+{t:"Evolução",q:"Analogia em evolução se refere a:",o:["Estruturas com função semelhante mas origem evolutiva diferente (ex: asa de inseto e asa de ave)","Estruturas com mesma origem mas função diferente","Genes idênticos em espécies diferentes","Sequências de DNA conservadas"],c:0,w:"Analogia: função similar, origem diferente (evolução convergente). Homologia: origem comum, funções podem diferir."},
+{t:"Evolução",q:"(FATEC) Deriva genética é mais significativa em:",o:["Populações pequenas (variação aleatória do pool gênico)","Populações grandes","Ambientes estáveis","Espécies com muitos filhotes"],c:0,w:"Deriva genética: mudança aleatória nas frequências alélicas. Efeito maior em populações pequenas."},
+{t:"Vírus e bactérias",q:"Vírus são acelulares e se reproduzem:",o:["Apenas dentro de células hospedeiras (parasitas intracelulares obrigatórios)","De forma independente em qualquer meio","Por bipartição","Por meiose"],c:0,w:"Vírus: não têm metabolismo próprio. Invadem células hospedeiras e usam sua maquinaria para se replicar."},
+{t:"Vírus e bactérias",q:"Antibióticos são eficazes contra:",o:["Bactérias (não funcionam contra vírus)","Vírus","Fungos apenas","Todos os patógenos"],c:0,w:"Antibióticos: combatem bactérias. Não têm efeito sobre vírus (que não têm as estruturas-alvo)."},
+{t:"Vírus e bactérias",q:"(FATEC) A vacinação funciona por:",o:["Estimular o sistema imune a produzir memória contra o patógeno antes do contato real","Destruir vírus diretamente","Substituir antibióticos","Matar bactérias no sangue"],c:0,w:"Vacinas: antígenos (mortos/atenuados) ativam produção de anticorpos e células de memória imunológica."},
+{t:"Botânica",q:"Fotossíntese ocorre nos cloroplastos. A equação geral é:",o:["6CO₂+6H₂O→C₆H₁₂O₆+6O₂ (com energia luminosa)","6O₂+6H₂O→CO₂+energia","C₆H₁₂O₆+O₂→CO₂+H₂O+ATP","CO₂+luz→O₂"],c:0,w:"Fotossíntese: CO₂+H₂O+luz→glicose+O₂. Produtores captam energia solar e fixam C."},
+{t:"Botânica",q:"Respiração celular aeróbia: a equação geral é:",o:["C₆H₁₂O₆+6O₂→6CO₂+6H₂O+ATP","6CO₂+6H₂O→C₆H₁₂O₆+O₂","CO₂+H₂O→glicose","Glicose+ATP→CO₂"],c:0,w:"Respiração: glicose+O₂→CO₂+H₂O+ATP (energia). Ocorre nas mitocôndrias."},
+{t:"Botânica",q:"Transpiraçãovegetal serve para:",o:["Transporte de seiva bruta pelo xilema (força motriz) e regulação de temperatura","Fotossíntese diretamente","Absorção de nutrientes","Produção de flores"],c:0,w:"Transpiração: perda de água pelos estômatos cria tensão que 'puxa' a seiva bruta pelo xilema."},
+{t:"Saúde",q:"(FATEC) Dengue, zika e chikungunya são transmitidos pelo mosquito:",o:["Aedes aegypti","Anopheles","Culex","Simulium"],c:0,w:"Aedes aegypti: vetor da dengue, zika, chikungunya e febre amarela urbana."},
+{t:"Saúde",q:"HIV causa AIDS ao destruir principalmente:",o:["Linfócitos T CD4⁺ (células de defesa)","Eritrócitos","Neurônios","Células hepáticas"],c:0,w:"HIV destrói linfócitos TCD4⁺ → imunossupressão → AIDS (doenças oportunistas)."},
+{t:"Saúde",q:"O colesterol LDL é conhecido como 'ruim' porque:",o:["Deposita colesterol nas paredes das artérias (aterosclerose)","Remove colesterol das artérias","Produz hormônios","Transporta vitaminas"],c:0,w:"LDL: leva colesterol do fígado para os tecidos → pode se depositar nas artérias → placa de ateroma."},
+{t:"Genética e biotecnologia",q:"PCR (Reação em Cadeia da Polimerase) é técnica usada para:",o:["Amplificar (multiplicar) sequências específicas de DNA","Sequenciar proteínas","Fabricar anticorpos","Realizar fecundação in vitro"],c:0,w:"PCR: amplifica fragmentos específicos de DNA exponencialmente. Usada em diagnósticos, pesquisa e forense."},
+{t:"Genética e biotecnologia",q:"OGM (Organismo Geneticamente Modificado) é aquele que:",o:["Recebeu gene(s) de outra espécie por engenharia genética","Sofreu mutação natural","É criado por seleção artificial tradicional","É clonado"],c:0,w:"OGM: organismo cujo DNA foi alterado com inserção de gene(s) exógenos por técnicas de engenharia genética."},
+{t:"Ecologia urbana",q:"(FATEC) Ilhas de calor urbanas resultam principalmente de:",o:["Substituição da vegetação por superfícies impermeáveis que retêm e irradiam calor","Excesso de chuvas","Alta altitude das cidades","Correntes marítimas"],c:0,w:"Ilhas de calor: asfalto e concreto absorvem calor e o irradiam. Falta de vegetação elimina a evapotranspiração refrescante."}
+]},
+
+// ══════════════════════════════════════════════════════
+// 7 — HISTÓRIA (50q)
+// ══════════════════════════════════════════════════════
+{name:"História",ico:"🏛️",bg:"#3a2a0a",ac:"#ff9800",
+q:[
+{t:"Brasil colonial",q:"O sistema de capitanias hereditárias (1532) foi criado para:",o:["Colonizar o Brasil dividindo-o em faixas entregues a donatários","Abolir a escravidão indígena","Criar municípios autônomos","Expulsar os franceses"],c:0,w:"Capitanias hereditárias: 15 faixas doadas a 12 donatários para colonizar e defender o território."},
+{t:"Brasil colonial",q:"O Pacto Colonial (exclusivo metropolitano) determinava que as colônias:",o:["Só podiam comerciar com a metrópole, garantindo lucro para Portugal","Podiam comerciar livremente","Eram autônomas economicamente","Exportavam manufaturados"],c:0,w:"Pacto Colonial: colônia fornece matérias-primas e compra manufaturados exclusivamente da metrópole."},
+{t:"Brasil colonial",q:"A Inconfidência Mineira (1789) foi motivada principalmente pela:",o:["Derrama (cobrança excessiva de impostos) e influência iluminista","Abolição da escravidão","Invasão portuguesa","Independência dos EUA"],c:0,w:"Inconfidência: reação à opressão fiscal (derrama) e influência do Iluminismo e da Independência americana."},
+{t:"Brasil Império",q:"A independência do Brasil (1822) foi proclamada por:",o:["D. Pedro I às margens do Ipiranga","D. João VI no Rio de Janeiro","Tiradentes em Minas Gerais","Simón Bolívar"],c:0,w:"Independência: 7/9/1822 — D. Pedro I proclama 'Independência ou Morte' (Grito do Ipiranga)."},
+{t:"Brasil Império",q:"O período regencial (1831-1840) foi marcado por:",o:["Instabilidade política e revoltas regionais (Cabanagem, Balaiada, Sabinada, Farroupilha)","Paz e prosperidade","Grande desenvolvimento industrial","União com Portugal"],c:0,w:"Regência: D. Pedro I abdicou em 1831. Período de revoltas regionais até a maioridade de D. Pedro II (1840)."},
+{t:"Brasil Império",q:"A Lei Áurea (1888) aboliu:",o:["A escravidão no Brasil","As capitanias hereditárias","O regime imperial","A monarquia constitucional"],c:0,w:"Lei Áurea (13/5/1888), assinada pela Princesa Isabel: aboliu definitivamente a escravidão no Brasil."},
+{t:"Brasil República",q:"A República Velha (1889-1930) foi marcada pela política do 'café com leite' que representa:",o:["Alternância no poder entre São Paulo (café) e Minas Gerais (leite)","Aliança entre Brasil e Portugal","Política econômica para pobres","Reforma agrária"],c:0,w:"Café com leite: oligarquias cafeeiras de SP e pecuaristas de MG se revezavam na presidência."},
+{t:"Brasil República",q:"A Revolução de 1930 levou ao poder:",o:["Getúlio Vargas, encerrando a República Velha","Dom Pedro III","Rui Barbosa","Epitácio Pessoa"],c:0,w:"Revolução de 1930: movimento que colocou Getúlio Vargas no poder, encerrando a hegemonia oligárquica."},
+{t:"Brasil República",q:"O Estado Novo (1937-1945) foi um regime:",o:["Ditatorial instaurado por Vargas com Constituição autoritária ('Polaca')","Democrático e liberal","Militar sem partido","Monarquista"],c:0,w:"Estado Novo: ditadura de Vargas. Fechou o Congresso, censurou a imprensa, perseguiu opositores."},
+{t:"Brasil República",q:"(FATEC) O AI-5 (1968), durante a ditadura militar, ficou conhecido como:",o:["O ato mais duro, que suspendeu direitos políticos e fechou o Congresso","A lei que garantiu eleições livres","O decreto que aboliu a censura","O início da redemocratização"],c:0,w:"AI-5 (13/12/1968): suspendeu habeas corpus, fechou Congresso, instaurou censura — marco da repressão militar."},
+{t:"Brasil contemporâneo",q:"A Constituição Federal de 1988 ficou conhecida como:",o:["Constituição Cidadã (Ulysses Guimarães) — marcou a redemocratização","Constituição do Império","Constituição Polaca","Constituição de 1946"],c:0,w:"CF/1988: 'Constituição Cidadã'. Ampliou direitos fundamentais após 21 anos de ditadura militar."},
+{t:"Brasil contemporâneo",q:"O Plano Real (1994) foi implementado para:",o:["Controlar a hiperinflação e estabilizar a economia brasileira","Privatizar empresas estatais","Criar o Mercosul","Pagar a dívida externa"],c:0,w:"Plano Real: criou nova moeda (R$), ancoragem cambial e controle monetário → fim da hiperinflação."},
+{t:"História Mundial",q:"A Revolução Francesa (1789) foi motivada por:",o:["Crise econômica, desigualdade social e ideias iluministas","Invasão inglesa","Disputa religiosa","Revolução industrial"],c:0,w:"Rev. Francesa: crise fiscal, desigualdade (Estates System) e Iluminismo. Lema: Liberdade, Igualdade, Fraternidade."},
+{t:"História Mundial",q:"A Revolução Industrial começou na:",o:["Inglaterra (séc. XVIII)","França (séc. XIX)","Alemanha (séc. XVII)","EUA (séc. XVIII)"],c:0,w:"Rev. Industrial: iniciou na Inglaterra (séc. XVIII) com a máquina a vapor. Transformou produção e sociedade."},
+{t:"História Mundial",q:"A 1ª Guerra Mundial (1914-1918) terminou com:",o:["Tratado de Versalhes, que humilhou a Alemanha e gerou condições para a 2ª Guerra","Vitória alemã","Empate entre as potências","Criação da ONU"],c:0,w:"Tratado de Versalhes (1919): cláusula da culpa exclusiva da Alemanha, reparações pesadas → crise que favoreceu o nazismo."},
+{t:"História Mundial",q:"A 2ª Guerra Mundial terminou em 1945 com:",o:["Derrota do Eixo (Alemanha, Itália, Japão) e criação da ONU","Vitória alemã","Armistício sem vencedor","Divisão do mundo em 3 blocos"],c:0,w:"1945: capitulação da Alemanha (maio) e Japão (agosto, após bombas atômicas). Criação da ONU em outubro."},
+{t:"História Mundial",q:"A Guerra Fria (1947-1991) foi o confronto entre:",o:["EUA (capitalismo) e URSS (socialismo) sem conflito armado direto","EUA e China","Europa e Ásia","OTAN e ONU"],c:0,w:"Guerra Fria: disputa ideológica, econômica e tecnológica entre EUA e URSS. Dividiu o mundo em blocos."},
+{t:"História Mundial",q:"A Queda do Muro de Berlim (1989) simbolizou:",o:["O fim da Guerra Fria e da divisão da Alemanha","O início da 2ª Guerra","A reunificação da URSS","O fortalecimento do comunismo"],c:0,w:"Queda do Muro (9/11/1989): início da reunificação alemã e sinal do colapso do socialismo soviético."},
+{t:"História Mundial",q:"(FATEC) A Revolução Russa (1917) instaurou:",o:["O primeiro Estado socialista do mundo (liderado por Lenin e os bolcheviques)","Uma monarquia constitucional","Uma república democrática liberal","Um regime nazifascista"],c:0,w:"Revolução de Outubro/1917: bolcheviques (Lenin) tomam poder → URSS (1922) = primeiro Estado socialista."},
+{t:"História geral",q:"O fascismo italiano (Mussolini) e o nazismo alemão (Hitler) são ideologias:",o:["Ultranacionalistas, totalitárias e de extrema-direita","Socialistas e de esquerda","Liberais e democráticas","Anarquistas"],c:0,w:"Fascismo e nazismo: totalitarismo, ultranacionalismo, culto ao líder, antidemocracia e violência política."},
+{t:"História geral",q:"O Holocausto durante a 2ª Guerra foi:",o:["Genocídio de ~6 milhões de judeus e outras minorias pelo regime nazista","Bombardeio das cidades japonesas","Batalha de Stalingrado","Invasão da Normandia"],c:0,w:"Holocausto (Shoah): extermínio sistemático de ~6 milhões de judeus + ciganos, homossexuais, deficientes, etc."},
+{t:"História geral",q:"O processo de descolonização da África e Ásia ocorreu principalmente:",o:["Após a 2ª Guerra Mundial (décadas de 1950-60)","Durante a 1ª Guerra","No século XIX","Durante a Guerra Fria antes de 1940"],c:0,w:"Descolonização: após 1945, movimentos independentistas na África e Ásia ganham força. Maioria entre 1950-1970."},
+{t:"América Latina",q:"A Revolução Cubana (1959) foi liderada por:",o:["Fidel Castro e Che Guevara","Simón Bolívar","Salvador Allende","Hugo Chávez"],c:0,w:"Rev. Cubana: guerrilha de Castro/Guevara derrubou Batista em 1959 → Cuba socialista → embargo americano."},
+{t:"América Latina",q:"O Mercosul foi criado em 1991 para:",o:["Integração econômica entre Brasil, Argentina, Uruguai e Paraguai","Criar moeda única na América Latina","Substituir a OEA","Combater o narcotráfico"],c:0,w:"Mercosul: bloco econômico de integração regional criado pelo Tratado de Assunção (1991)."},
+{t:"Movimentos sociais",q:"A Semana de Arte Moderna de 1922 no Brasil representou:",o:["Ruptura com o academicismo e busca de identidade cultural brasileira","O início da industrialização","A proclamação da república","A abolição da escravidão"],c:0,w:"Modernismo 1922: ruptura com padrões europeus, valorização da cultura popular brasileira e língua coloquial."},
+{t:"Movimentos sociais",q:"(FATEC) O movimento feminista de 2ª onda (anos 1960-70) lutava por:",o:["Igualdade no trabalho, direito ao corpo e ao voto (em países que ainda não tinham)","Apenas direito ao voto","Igualdade econômica global","Fim do capitalismo"],c:0,w:"2ª onda feminista: igualdade no mercado de trabalho, direitos reprodutivos e questões de gênero."},
+{t:"Globalização",q:"A globalização é o processo de:",o:["Integração econômica, cultural e tecnológica mundial acelerada a partir do séc. XX","Divisão do mundo em blocos isolados","Retorno ao mercantilismo","Criação de estados-nação independentes"],c:0,w:"Globalização: integração dos mercados, culturas e informações. Acelerada pela tecnologia e queda do Muro de Berlim."},
+{t:"Globalização",q:"Uma crítica à globalização é que ela:",o:["Aprofunda desigualdades entre países ricos e pobres e homogeneíza culturas","Distribui riquezas igualmente","Fortalece todas as culturas locais","Elimina o comércio internacional"],c:0,w:"Crítica: concentração de riqueza nos países centrais, dominação cultural americana/ocidental e vulnerabilidade dos países periféricos."},
+{t:"História do trabalho",q:"A CLT (Consolidação das Leis do Trabalho) foi criada no Brasil em:",o:["1943, pelo governo Vargas","1888, com a abolição","1922, pelo movimento operário","1964, pela ditadura"],c:0,w:"CLT (1943): marco da legislação trabalhista brasileira. Criada por Vargas como parte do Estado Novo."},
+{t:"História do trabalho",q:"A Revolução Industrial gerou para os trabalhadores inicialmente:",o:["Jornadas exaustivas, trabalho infantil, péssimas condições e baixos salários","Melhoria imediata das condições de vida","Redução do horário de trabalho","Criação de sindicatos livres"],c:0,w:"Primórdios da Rev. Industrial: exploração intensa do trabalho, incluindo crianças. Levou ao movimento operário e ao socialismo."},
+{t:"Geopolítica histórica",q:"A OTAN (NATO) é uma aliança militar criada em 1949 entre:",o:["EUA, Canadá e países da Europa Ocidental (defesa contra URSS)","URSS e aliados socialistas","Países latino-americanos","China e aliados asiáticos"],c:0,w:"OTAN: Organização do Tratado do Atlântico Norte. Aliança militar ocidental criada no contexto da Guerra Fria."},
+{t:"Geopolítica histórica",q:"O Apartheid na África do Sul foi um sistema de:",o:["Segregação racial institucionalizada que durou até 1994","Colonialismo britânico","Ditadura militar sem base racial","União de povos africanos"],c:0,w:"Apartheid (1948-1994): segregação racial institucional na África do Sul. Fim com Nelson Mandela presidente (1994)."},
+{t:"História econômica",q:"A Grande Depressão de 1929 foi desencadeada pela:",o:["Quebra da Bolsa de Nova York e colapso do sistema financeiro","1ª Guerra Mundial diretamente","Revolução Russa","Crise do petróleo"],c:0,w:"Crise de 1929: especulação, superprodução e quebra da NYSE → recessão global → desemprego em massa."},
+{t:"Atualidades históricas",q:"(FATEC 2023) O conflito Rússia-Ucrânia iniciado em 2022 tem como contexto:",o:["Expansão da OTAN para o leste, herança soviética e disputa de influência regional","Conflito religioso exclusivamente","Disputa por diamantes","Guerra Civil ucraniana"],c:0,w:"Invasão russa à Ucrânia (fev/2022): contexto geopolítico complexo — expansão da OTAN, identidade cultural e interesses estratégicos russos."},
+{t:"Atualidades históricas",q:"(FATEC) A 4ª Revolução Industrial é marcada por:",o:["Inteligência artificial, automação, IoT, big data e fusão digital-físico-biológico","Uso do vapor e carvão","Linha de montagem e eletricidade","Computadores pessoais apenas"],c:0,w:"4ª Rev. Industrial (Schwab): IA, robótica avançada, IoT, impressão 3D, biotecnologia — fusão dos mundos digital e físico."},
+{t:"Civilizações antigas",q:"A democracia ateniense (séc. V a.C.) é considerada a origem da:",o:["Participação popular direta no governo — embora excluísse mulheres, escravos e estrangeiros","Democracia representativa moderna sem exclusões","Monarquia constitucional","República romana"],c:0,w:"Democracia de Atenas: cidadãos (homens livres e nascidos em Atenas) participavam diretamente. Base histórica da democracia."},
+{t:"Civilizações antigas",q:"A civilização romana contribuiu para o Ocidente com:",o:["Direito romano, latim (base das línguas românicas), engenharia e organização administrativa","Apenas arte e escultura","A escrita cuneiforme","O sistema decimal"],c:0,w:"Roma: direito (influência direta no direito brasileiro), latim (→português), infraestrutura e organização estatal."},
+{t:"Renascimento",q:"O Renascimento (séc. XIV-XVI) caracterizou-se por:",o:["Retorno aos valores greco-romanos, humanismo e racionalismo","Teocentrismo e feudalismo","Expansão islâmica","Surgimento do protestantismo apenas"],c:0,w:"Renascimento: antropocentrismo, razão, valorização da arte e ciência. Rompimento com a visão medieval teocêntrica."},
+{t:"Reforma protestante",q:"A Reforma Protestante (1517) foi iniciada por:",o:["Martinho Lutero (95 teses contra as indulgências)","João Calvino","Henrique VIII","Erasmo de Rotterdam"],c:0,w:"Lutero afixou as 95 teses em 1517, contestando as indulgências. Origem do protestantismo."},
+{t:"Imperialismo",q:"O Imperialismo europeu do séc. XIX na África e Ásia foi motivado por:",o:["Busca de mercados, matérias-primas e sentimento de superioridade racial","Motivos exclusivamente religiosos","Vontade de ensinar democracia","Disputas internas europeias sem interesse econômico"],c:0,w:"Imperialismo: expansão capitalista em busca de recursos e mercados + ideologia da 'missão civilizatória'."},
+{t:"Brasil/tecnologia",q:"(FATEC) O Proálcool (1975) foi programa brasileiro para:",o:["Desenvolver etanol como combustível alternativo ao petróleo após crise de 1973","Privatizar a Petrobras","Criar a indústria automobilística","Exportar petróleo"],c:0,w:"Proálcool: resposta à crise do petróleo de 1973. Brasil tornou-se referência mundial em biocombustíveis."}
+]},
+
+// ══════════════════════════════════════════════════════
+// 8 — GEOGRAFIA (50q)
+// ══════════════════════════════════════════════════════
+{name:"Geografia",ico:"🌎",bg:"#0a3a2a",ac:"#00bfa5",
+q:[
+{t:"Cartografia",q:"A escala cartográfica 1:50.000 significa que 1 cm no mapa equivale a:",o:["50.000 cm (500 m) na realidade","50.000 km","1 km","5 km"],c:0,w:"1:50.000 → 1cm=50.000cm=500m=0,5km na realidade."},
+{t:"Cartografia",q:"Coordenadas geográficas são definidas por:",o:["Latitude (norte/sul) e longitude (leste/oeste)","Altitude e temperatura","Escala e legenda","Norte magnético e declinação"],c:0,w:"Coordenadas: latitude (paralelos, 0° a 90° N/S) e longitude (meridianos, 0° a 180° L/O)."},
+{t:"Cartografia",q:"O Trópico de Capricórnio está localizado aproximadamente a:",o:["23°26' de latitude sul","23°26' de latitude norte","0° (Equador)","66°33' sul"],c:0,w:"Trópico de Capricórnio: ~23°26'S. Passa pelo Brasil (SP, MG, MS). Trópico de Câncer: 23°26'N."},
+{t:"Cartografia",q:"O que é o Meridiano de Greenwich?",o:["0° de longitude — divide o globo em hemisférios leste e oeste","0° de latitude","90° de longitude","O meridiano que passa pelo Brasil"],c:0,w:"Greenwich (0° longitude): referência para os fusos horários. Divide o mundo em Hemisfério Leste e Oeste."},
+{t:"Cartografia",q:"Projeção de Mercator é usada em navegação porque:",o:["Preserva ângulos/formas mas distorce áreas nas altas latitudes","Preserva áreas exatamente","Mostra o mundo em perspectiva isométrica","É a mais recente projeção cartográfica"],c:0,w:"Mercator (1569): conforme (preserva ângulos), ideal para navegação. Distorce áreas — Groenlândia parece maior que a África."},
+{t:"Brasil — relevo e clima",q:"O Brasil é predominantemente formado por:",o:["Planaltos e planícies (sem grandes cordilheiras)","Altas cordilheiras como os Andes","Apenas planícies","Montanhas com mais de 5000m"],c:0,w:"Brasil: predominância de planaltos (Centro-Oeste, Sudeste) e planícies (Pantanal, Amazônica). Sem cordilheiras elevadas."},
+{t:"Brasil — relevo e clima",q:"O clima equatorial na Amazônia tem como características:",o:["Altas temperaturas o ano todo e chuvas abundantes e regulares","Seca no inverno e chuvas no verão","Baixas temperaturas e neve no inverno","Clima frio e úmido"],c:0,w:"Equatorial: temperatura média >25°C, chuvas >2000mm/ano bem distribuídas. Floresta Amazônica."},
+{t:"Brasil — relevo e clima",q:"O clima semiárido do Nordeste tem como fenômeno típico:",o:["Seca prolongada e irregular (fenômeno El Niño/La Niña intensificado)","Neve no inverno","Chuvas excessivas o ano todo","Temperaturas negativas"],c:0,w:"Semiárido nordestino: chuvas irregulares (<800mm), concentradas em poucos meses. Seca é principal problema."},
+{t:"Brasil — relevo e clima",q:"O Rio São Francisco é importante porque:",o:["É o único grande rio inteiramente brasileiro e tem função econômica e social no Nordeste","Nasce no Amazonas","Deságua no Prata","Não tem importância para o Nordeste"],c:0,w:"São Francisco: nasce em MG, percorre 2700km, deságua no Nordeste (AL/SE). 'Rio da Integração Nacional'."},
+{t:"Brasil — biomas",q:"A Amazônia representa aproximadamente qual fração do território brasileiro?",o:["Cerca de 50%","Cerca de 70%","Cerca de 30%","Cerca de 10%"],c:0,w:"Amazônia Legal: ~5 milhões km² ≈ 59% do Brasil. Bioma amazônico: ~49% do território."},
+{t:"Brasil — biomas",q:"O Cerrado é o segundo maior bioma brasileiro e é importante por:",o:["Ser o 'berço das águas' — nasce ali grande parte dos rios brasileiros","Ser apenas pastagem","Ter clima frio e seco","Ser exclusivo da Região Norte"],c:0,w:"Cerrado: centro do Brasil, berço de bacias hidrográficas (Paraná, São Francisco, Araguaia/Tocantins). Altamente ameaçado."},
+{t:"Brasil — biomas",q:"A Caatinga é bioma exclusivo do:",o:["Nordeste brasileiro — único ecossistema exclusivamente brasileiro","Sudeste","Norte","Centro-Oeste"],c:0,w:"Caatinga: exclusiva do Nordeste semiárido. Única bioma 100% brasileiro. Adaptada à seca."},
+{t:"Brasil — biomas",q:"A Mata Atlântica está reduzida a:",o:["Menos de 15% de sua cobertura original (um dos biomas mais ameaçados)","80% de sua área original","50% de sua área original","100% preservada por lei"],c:0,w:"Mata Atlântica: restam ~12-15% da cobertura original. Um dos 'hotspots' mundiais de biodiversidade."},
+{t:"Brasil — população",q:"O Brasil tem população distribuída de forma:",o:["Concentrada no litoral e no Sudeste; interior pouco populoso","Uniforme por todo o território","Concentrada na Amazônia","Predominantemente rural"],c:0,w:"Distribuição desigual: 80% da população vive a menos de 300km do litoral. Sudeste concentra ~40% da população."},
+{t:"Brasil — economia",q:"O agronegócio brasileiro é importante porque:",o:["O Brasil é um dos maiores exportadores mundiais de soja, carne, cana-de-açúcar e café","O Brasil importa toda sua alimentação","A indústria supera a agricultura em todos os estados","É responsável apenas por 1% do PIB"],c:0,w:"Brasil: 1° exportador mundial de soja, carne bovina, frango, café, açúcar e OJ. Agronegócio ~25% do PIB."},
+{t:"Brasil — urbanização",q:"A taxa de urbanização do Brasil é aproximadamente:",o:["Mais de 85% da população vive em cidades","50% urbana e 50% rural","Menos de 50% urbana","100% urbana"],c:0,w:"Brasil: ~87% da população é urbana (IBGE). Urbanização acelerada a partir dos anos 1950-70."},
+{t:"Brasil — urbanização",q:"O fenômeno de favelização nas cidades brasileiras resulta de:",o:["Migração campo-cidade sem infraestrutura adequada e desigualdade social","Política habitacional eficiente","Excesso de chuvas","Decisão voluntária das famílias"],c:0,w:"Favelização: êxodo rural intenso, falta de habitação popular e desigualdade → ocupações irregulares."},
+{t:"Geopolítica mundial",q:"A ONU (Organização das Nações Unidas) foi criada em:",o:["1945, após a 2ª Guerra Mundial, para manter a paz","1919, após a 1ª Guerra","1991, com o fim da Guerra Fria","1948, com a Declaração Universal dos Direitos Humanos"],c:0,w:"ONU: criada em 1945 (Carta de São Francisco). Substituiu a Liga das Nações. 193 países membros."},
+{t:"Geopolítica mundial",q:"Os países do BRICS são:",o:["Brasil, Rússia, Índia, China e África do Sul (economias emergentes)","EUA, Japão, Alemanha, UK e França","México, Indonésia, Nicarágua, Chile, Irã e Suécia","Argentina, Bolivia, Russia, Italia, China e Síria"],c:0,w:"BRICS: grandes economias emergentes. Representam ~40% da população mundial e ~25% do PIB global."},
+{t:"Geopolítica mundial",q:"O G7 reúne as 7 maiores economias:",o:["EUA, Japão, Alemanha, Reino Unido, França, Itália e Canadá","China, Brasil, Índia, Rússia, México, Indonésia e Turquia","BRICS + EUA + Japão","ONU + OTAN"],c:0,w:"G7: clube das economias avançadas. Discutem políticas globais de comércio, clima e segurança."},
+{t:"Geopolítica mundial",q:"(FATEC) A crise dos refugiados é gerada principalmente por:",o:["Guerras, perseguições políticas e religiosas, e crise climática","Excesso de turismo","Acordos comerciais","Industrialização excessiva"],c:0,w:"Refugiados: fugitivos de guerras (Síria, Afeganistão, Ucrânia), perseguições e desastres climáticos."},
+{t:"Globalização",q:"A globalização econômica caracteriza-se por:",o:["Integração dos mercados, fluxos de capital, comércio e produção em escala mundial","Isolamento econômico dos países","Fim das multinacionais","Retorno ao escambo"],c:0,w:"Globalização: liberalização comercial, cadeias produtivas globais, mobilidade de capital e informação."},
+{t:"Globalização",q:"As multinacionais (transnacionais) são empresas que:",o:["Operam em vários países, com sede geralmente nos países centrais","Atuam apenas em seu país de origem","São controladas por governos","Existem apenas no século XXI"],c:0,w:"Multinacionais: sede nos países desenvolvidos, produção nos países em desenvolvimento (mão de obra e recursos mais baratos)."},
+{t:"Meio ambiente",q:"O Protocolo de Kyoto (1997) tratou de:",o:["Redução de emissões de gases de efeito estufa pelos países industrializados","Proteção da camada de ozônio","Biodiversidade marinha","Gestão de resíduos nucleares"],c:0,w:"Kyoto: primeiro acordo vinculante de redução de CO₂. Substituído pelo Acordo de Paris (2015)."},
+{t:"Meio ambiente",q:"O Acordo de Paris (2015) tem como meta central:",o:["Limitar o aquecimento global abaixo de 2°C (idealmente 1,5°C) acima dos níveis pré-industriais","Eliminar todo o plástico dos oceanos até 2030","Criar um mercado global de carbono obrigatório","Proibir combustíveis fósseis imediatamente"],c:0,w:"Paris 2015: 196 países se comprometem a reduzir emissões para limitar o aquecimento global."},
+{t:"Meio ambiente",q:"Desertificação é o processo de:",o:["Degradação de terras áridas/semiáridas tornando-as improdutivas (principalmente no Nordeste)","Criação de desertos naturais por processos geológicos","Inundação de terras férteis","Urbanização de áreas rurais"],c:0,w:"Desertificação: degradação humana de terras secas. No Brasil: principal problema no Nordeste semiárido."},
+{t:"Meio ambiente",q:"(FATEC) O desmatamento da Amazônia provoca principalmente:",o:["Redução de chuvas, perda de biodiversidade, emissão de CO₂ e mudanças climáticas regionais e globais","Apenas desaparecimento de espécies locais","Aumento das chuvas na região","Melhoria do solo para agricultura"],c:0,w:"Desmatamento amazônico: libera C estocado, reduz evapotranspiração e chuvas, elimina biodiversidade — impacto global."},
+{t:"Urbanização mundial",q:"Megalópole é o termo para:",o:["Conjunto de metrópoles interligadas formando uma supercidade (ex: BosWash nos EUA)","Uma cidade com mais de 1 milhão de habitantes","Capital de um país","Cidade planejada do zero"],c:0,w:"Megalópole: conurbação de metrópoles. Ex: BosWash (Boston-Washington), São Paulo-Rio, Tóquio-Osaka."},
+{t:"Urbanização mundial",q:"A macrocefalia urbana é o fenômeno em que:",o:["Uma única cidade concentra desproporcionalmente a população e atividades do país","Todas as cidades crescem igualmente","O campo supera as cidades","O turismo gera cidades temporárias"],c:0,w:"Macrocefalia: uma metrópole domina a rede urbana (ex: Buenos Aires com ~35% da população argentina)."},
+{t:"Energia",q:"O Brasil destaca-se mundialmente por ter uma matriz energética:",o:["Predominantemente renovável — hidrelétrica (60%+) e crescimento de eólica e solar","Baseada em carvão mineral","Dependente do petróleo importado","Exclusivamente nuclear"],c:0,w:"Brasil: ~85% da eletricidade gerada por fontes renováveis. Referência em hidrelétricas e crescendo em eólica/solar."},
+{t:"Energia",q:"A maior hidrelétrica do mundo (em geração) é:",o:["Itaipu (Brasil/Paraguai) — ou Três Gargantas (China) em capacidade instalada","Belo Monte","Tucuruí","Hoover Dam (EUA)"],c:0,w:"Itaipu: maior em geração de energia por anos seguidos. Três Gargantas (China): maior em capacidade instalada."},
+{t:"Regiões do Brasil",q:"A Região Sudeste é a mais rica do Brasil porque:",o:["Concentra o maior PIB, a maior indústria, o maior polo financeiro (SP) e a maior população","É a maior em extensão territorial","Tem mais recursos naturais","Foi colonizada primeiro"],c:0,w:"Sudeste (~42% do PIB nacional): SP é o maior polo industrial e financeiro; RJ teve importância histórica e petróleo."},
+{t:"Regiões do Brasil",q:"O Norte é a maior região do Brasil em extensão, mas tem:",o:["A menor densidade demográfica (~4 hab/km²)","A maior população","O maior PIB","A maior industrialização"],c:0,w:"Norte: ~42% do território, mas ~8% da população. Densidade demográfica muito baixa. Predomina a Amazônia."},
+{t:"Regiões do Brasil",q:"O fenômeno da 'seca' no Nordeste tem causas:",o:["Posição geográfica (sertão interior), regime de chuvas irregular e El Niño/La Niña","Apenas política — pode ser resolvido com irrigação","Ausência de rios","Excesso de urbanização"],c:0,w:"Seca nordestina: causas naturais (posição geográfica, relevo, circulação atmosférica) e climáticas (ENOS). Estrutural."},
+{t:"Geopolítica Sul-Americana",q:"O Brasil faz fronteira com quantos países sul-americanos?",o:["10 países (todos exceto Chile e Equador)","7 países","12 países","5 países"],c:0,w:"Brasil faz fronteira com 10 dos 12 países da América do Sul (não faz fronteira com Chile e Equador)."},
+{t:"Comércio internacional",q:"A balança comercial superavitária significa que:",o:["As exportações superam as importações","As importações superam as exportações","Exportações = importações","A dívida externa foi quitada"],c:0,w:"Superávit comercial: X > M. Déficit: M > X. O Brasil tem sido superavitário na maioria dos anos recentes."},
+{t:"Tecnologia e geografia",q:"(FATEC) A expansão da internet e das TICs (Tecnologias de Informação e Comunicação) tem como efeito geográfico:",o:["Compressão do espaço-tempo: encurtamento de distâncias e aceleração das relações","Isolamento dos países","Fim do comércio físico","Aumento das migrações físicas exclusivamente"],c:0,w:"TICs e internet: Harvey chamou de 'compressão espaço-tempo'. O digital suprime distâncias geográficas."},
+{t:"Tecnologia e geografia",q:"A agricultura de precisão usa tecnologias como GPS e sensoriamento remoto para:",o:["Otimizar o uso de insumos e aumentar produtividade com menor impacto ambiental","Substituir completamente os agricultores","Ampliar o desmatamento","Reduzir a produção agrícola"],c:0,w:"Agricultura de precisão: monitora condições do solo/clima em tempo real para aplicar insumos apenas onde necessário."}
+]}
+];
+
+// ── DICAS ──
+var TIPS={
+"Funções":"Revise domínio, raízes, vértice, funções exponenciais e logarítmicas.",
+"Progressões":"PA e PG: fórmulas do termo geral e da soma. PG infinita: S=a/(1−r).",
+"Geometria plana":"Áreas e perímetros, Teorema de Pitágoras. Sempre cai.",
+"Geometria espacial":"Volume de cubo, cilindro, cone e esfera.",
+"Trigonometria":"Valores de sen, cos e tg nos ângulos notáveis (30°,45°,60°,90°).",
+"Combinatória":"P, A e C — saiba quando a ordem importa.",
+"Probabilidade":"P=favoráveis/possíveis. Eventos independentes: P(A)×P(B).",
+"Estatística":"Média, mediana, moda e variância. Média ponderada.",
+"Equações":"Eq. 1° e 2° grau, sistemas lineares, equações exponenciais.",
+"Matemática financeira":"JS (J=Cit) e JC (M=C(1+i)^t), porcentagem.",
+"Proposições":"Conectivos, tabelas-verdade, negação, De Morgan.",
+"Conjuntos":"União, interseção, complementar, Princípio da Inclusão-Exclusão.",
+"Sequências":"Reconheça padrões: PA, PG, Fibonacci, quadrados, primos.",
+"Problemas lógicos":"Silogismos, deduções, contrapositiva, ordenação.",
+"Raciocínio aplicado":"Regra de três, trabalho conjunto, velocidade-tempo-distância.",
+"Probabilidade lógica":"Identifique o espaço amostral e os casos favoráveis.",
+"Multidisciplinar":"Leia o enunciado com atenção ao contexto — lógica + interpretação.",
+"Interpretação de texto":"Pratique identificar ideia central, inferências e intenção do autor.",
+"Coesão e coerência":"Estude conectivos e suas funções (causa, conclusão, oposição).",
+"Gramática":"Crase, concordância verbal, partícula 'se', voz passiva.",
+"Literatura":"Escola literária × características × principais autores.",
+"Gêneros textuais":"Função e estrutura de cada gênero (editorial, crônica, receita...).",
+"Variação linguística":"4 tipos: diatópica, diastrática, diacrônica, diafásica.",
+"Fonética":"Dífonos, dígrafos, fonemas × grafemas.",
+"Morfologia":"Classes de palavras, formação de palavras.",
+"Sintaxe":"Funções sintáticas: sujeito, OD, OI, predicativo.",
+"Pontuação":"Usos da vírgula, ponto e vírgula, dois pontos.",
+"Redação":"Estrutura dissertativo-argumentativa: tese, argumentos, proposta.",
+"Semântica":"Sinonímia, antonímia, polissemia, figuras de linguagem.",
+"Reading comprehension":"Leia o texto uma vez, depois os itens, depois volte ao texto.",
+"Grammar":"Tempos verbais, voz passiva, condicionais, reported speech.",
+"Vocabulary":"Falsos cognatos e vocabulário tecnológico são muito cobrados na FATEC.",
+"Technology vocabulary":"API, UX, bug, cloud, open source — vocabulário de TI em inglês.",
+"Reading — technology":"Textos de tecnologia na FATEC são frequentes. Pratique leitura técnica.",
+"Grammar — technology context":"Modal passives e perfeitos compostos em contextos profissionais.",
+"Prepositions":"Memorize phrasal verbs e preposições fixas (responsible for, specialize in).",
+"Modal verbs":"Must (obrigação), should (recomendação), might/could (possibilidade).",
+"Connectors":"However, therefore, moreover, although, despite — muito cobrados.",
+"False friends":"Pretend, actually, eventually, sensible — os mais cobrados no FATEC.",
+"Reading — general":"Identifique o gênero textual e a intenção comunicativa.",
+"Cinemática":"MRU e MUV: fórmulas v=d/t, v=v₀+at, s=v₀t+at²/2.",
+"Dinâmica":"3 Leis de Newton. F=ma é a base.",
+"Trabalho e energia":"W=Fd·cosθ, Ec=mv²/2, Ep=mgh, P=W/t.",
+"Termologia":"Conversões °C↔K↔F, dilatação, calor e transmissão.",
+"Óptica":"Reflexão, refração, espelhos, lentes. Relacione com o cotidiano.",
+"Eletricidade":"Ohm (V=RI), série/paralelo, potência P=VI.",
+"Ondulatória":"v=λf, som vs luz, espectro eletromagnético.",
+"Gravitação":"F=Gm₁m₂/r², peso P=mg, empuxo.",
+"Hidrostática":"P=ρgh, Arquimedes, princípio de Pascal.",
+"Física moderna":"E=mc², fotoelétrico, radioatividade, fissão vs fusão.",
+"Cinemática avançada":"Gráficos: posição×tempo, velocidade×tempo. Inclinação e área.",
+"Oscilações":"Pêndulo, MHS, período e frequência.",
+"Eletromagnetismo":"Campo magnético, indução, Lei de Coulomb.",
+"Estrutura atômica":"Z, A, nêutrons, camadas eletrônicas.",
+"Tabela periódica":"Grupos, períodos, propriedades periódicas.",
+"Ligações químicas":"Iônica, covalente, metálica — quando ocorre cada uma.",
+"Funções inorgânicas":"Ácido, base, sal, óxido — definições e exemplos.",
+"Reações químicas":"Tipos (síntese, análise, deslocamento, dupla troca), balanceamento.",
+"Estequiometria":"Mol, massa molar, Avogadro, proporções estequiométricas.",
+"Soluções":"Concentração molar, diluição, saturação.",
+"Equilíbrio químico":"Le Chatelier — perturbações deslocam o equilíbrio.",
+"Eletroquímica":"Oxidação/redução, pilhas, ânodo/cátodo.",
+"Química orgânica":"Grupos funcionais, hidrocarbonetos, fermentação.",
+"Química ambiental":"CFC, chuva ácida, efeito estufa, petróleo.",
+"Radioatividade":"Tipos de radiação (α,β,γ), meia-vida.",
+"Termoquímica":"ΔH, exotérmica vs endotérmica, entalpia.",
+"Citologia":"Célula pro vs eucariota, organelas e funções.",
+"Divisão celular":"Mitose (crescimento) vs Meiose (gametas).",
+"Genética":"DNA, leis de Mendel, genótipo vs fenótipo.",
+"Ecologia":"Cadeias alimentares, ciclos biogeoquímicos, biomas.",
+"Fisiologia":"Sistemas digestório, circulatório, nervoso e excretor.",
+"Evolução":"Darwin, seleção natural, especiação.",
+"Vírus e bactérias":"Diferenças, reprodução, tratamento (antibiótico ≠ antiviral).",
+"Botânica":"Fotossíntese, respiração, transpiração.",
+"Saúde":"Doenças infecciosas, imunidade, hábitos saudáveis.",
+"Genética e biotecnologia":"PCR, OGM, sequenciamento genético.",
+"Ecologia urbana":"Ilhas de calor, poluição, saneamento.",
+"Brasil colonial":"Colonização, Pacto Colonial, revoltas coloniais.",
+"Brasil Império":"Independência, Regência, abolição.",
+"Brasil República":"República Velha, Vargas, ditadura militar, redemocratização.",
+"Brasil contemporâneo":"CF/1988, Plano Real, democracia.",
+"História Mundial":"Revoluções, guerras mundiais, Guerra Fria.",
+"História geral":"Fascismo, Holocausto, descolonização.",
+"América Latina":"Revolução Cubana, ditaduras, Mercosul.",
+"Movimentos sociais":"Feminismo, modernismo, movimentos operários.",
+"Globalização":"Integração, desigualdades, críticas.",
+"História do trabalho":"CLT, sindicalismo, Rev. Industrial e trabalhadores.",
+"Geopolítica histórica":"OTAN, Apartheid, Guerra Fria.",
+"História econômica":"1929, Bretton Woods, neoliberalismo.",
+"Atualidades históricas":"4ª Rev. Industrial, pandemia, conflitos atuais.",
+"Civilizações antigas":"Grécia, Roma, Egito — contribuições para o Ocidente.",
+"Renascimento":"Humanismo, racionalismo, arte e ciência.",
+"Reforma protestante":"Lutero, Calvino, consequências políticas.",
+"Imperialismo":"Neocolonialismo, causas e consequências.",
+"Brasil/tecnologia":"Proálcool, agronegócio, desindustrialização.",
+"Cartografia":"Escala, coordenadas, projeções, fusos.",
+"Brasil — relevo e clima":"Relevo, bacias hidrográficas, climas do Brasil.",
+"Brasil — biomas":"Amazônia, Cerrado, Caatinga, Pantanal, Mata Atlântica.",
+"Brasil — população":"Distribuição, densidade, urbanização.",
+"Brasil — economia":"Agronegócio, indústria, serviços, comércio exterior.",
+"Brasil — urbanização":"Megalópoles, favelas, infraestrutura urbana.",
+"Geopolítica mundial":"ONU, blocos econômicos, geopolítica atual.",
+"Globalização":"Integração, multinacionais, desigualdades.",
+"Meio ambiente":"Acordos climáticos, desmatamento, energias renováveis.",
+"Urbanização mundial":"Megalópoles, macrocefalia, urbanização nos países em desenvolvimento.",
+"Energia":"Matriz energética, hidrelétricas, renováveis.",
+"Regiões do Brasil":"Sudeste, Norte, Nordeste, Sul, Centro-Oeste.",
+"Geopolítica Sul-Americana":"Fronteiras, Mercosul, tensões regionais.",
+"Comércio internacional":"Balança comercial, termos de troca, OMC.",
+"Tecnologia e geografia":"TICs, agricultura de precisão, espaço geográfico digital."
+};
+
+// ── STATE ──
+var ST={si:0,idx:0,ans:[],sel:null};
+function SB(){return SB_data;}
+var SB_data;
+function L(i){return String.fromCharCode(65+i);}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  var home=document.getElementById('sc-home');
+  home.classList.remove('on');
+  if(id==='sc-home'){home.classList.add('on');}
+  else{document.getElementById(id).classList.add('on');}
+  window.scrollTo(0,0);
+}
+
+function startQ(si){
+  ST.si=si;ST.idx=0;ST.sel=null;
+  SB_data=SB[si];
+  ST.ans=new Array(SB_data.q.length).fill(null);
+  show('sc-quiz');
+  render();
+}
+
+function render(){
+  var s=SB_data;var q=s.q[ST.idx];
+  var answered=ST.ans[ST.idx]!==null;
+  var scoreOk=ST.ans.filter(function(a){return a===true;}).length;
+  var prog=Math.round(((ST.idx+(answered?1:0))/s.q.length)*100);
+
+  var dots='';
+  for(var i=0;i<s.q.length;i++){
+    var dc='d ';
+    if(ST.ans[i]===true)dc+='ok';
+    else if(ST.ans[i]===false)dc+='wrong';
+    else dc+='pend';
+    if(i===ST.idx)dc+=' cur';
+    dots+='<div class="'+dc+'" onclick="gotoQ('+i+')" title="Q'+(i+1)+'"></div>';
+  }
+
+  var opts='';
+  for(var j=0;j<q.o.length;j++){
+    var oc='';
+    if(answered){
+      if(j===q.c)oc='ok';
+      else if(j===ST.sel)oc='err';
+      else oc='dim';
+    }
+    opts+='<button class="opt '+oc+'" '+(answered?'disabled':'')+' onclick="choose('+j+')">'
+      +'<span class="ol">'+L(j)+'</span><span>'+q.o[j]+'</span></button>';
+  }
+
+  var fb='';
+  if(answered){
+    var ok=ST.ans[ST.idx]===true;
+    fb='<div class="fb '+(ok?'ok':'err')+'">'
+      +'<div class="fb-top"><span class="fb-ico">'+(ok?'✅':'❌')+'</span>'
+      +'<div><div class="fb-v">'+(ok?'Correto!':'Resposta: '+L(q.c))+'</div></div></div>'
+      +'<div class="fb-why">'+q.w+'</div></div>';
+  }
+
+  var nxtL=ST.idx>=s.q.length-1?'Ver resultado':(answered?'Próxima →':'Pular →');
+  var html='<div class="qhdr">'
+    +'<button class="hbtn" onclick="show(\'sc-home\')">←</button>'
+    +'<div class="qhdr-info">'
+    +'<div class="qhdr-name" style="color:'+s.ac+'">'+s.ico+' '+s.name+'</div>'
+    +'<div class="qhdr-meta">Q '+(ST.idx+1)+'/'+s.q.length+'</div></div>'
+    +'<div class="spill">✓ '+scoreOk+'/'+s.q.length+'</div></div>'
+    +'<div class="pgrow"><div class="pgbar"><div class="pgfill" style="width:'+prog+'%;background:'+s.ac+'"></div></div>'
+    +'<span class="pglbl">'+prog+'%</span></div>'
+    +'<div class="dotrow">'+dots+'</div>'
+    +'<div class="qcard">'
+    +'<div class="qtag"><span class="qn" style="color:'+s.ac+'">Q'+(ST.idx+1)+'</span> · '+q.t+'</div>'
+    +'<div class="qtext">'+q.q+'</div>'
+    +opts+fb+'</div>'
+    +'<button class="listbtn" onclick="openM()">📋 Lista de questões</button>'
+    +'<div class="navrow">'
+    +'<button class="nb prev" onclick="prevQ()" '+(ST.idx===0?'disabled':'')+'>← Ant.</button>'
+    +'<button class="nb" style="background:'+s.ac+';color:'+(s.si===1?'#1a0a2e':'#fff')+'" onclick="nextQ()">'+nxtL+'</button>'
+    +'</div>'
+    +'<div class="foot">'+(answered?'Leia a explicação.':'Leia com atenção antes de responder.')+'</div>';
+
+  document.getElementById('quiz-inner').innerHTML=html;
+}
+
+function choose(i){
+  if(ST.ans[ST.idx]!==null)return;
+  ST.sel=i;ST.ans[ST.idx]=(i===SB_data.q[ST.idx].c);render();
+}
+function prevQ(){if(ST.idx>0){ST.idx--;ST.sel=null;render();}}
+function nextQ(){if(ST.idx>=SB_data.q.length-1){showResult();return;}ST.idx++;ST.sel=null;render();}
+function gotoQ(i){ST.idx=i;ST.sel=null;closeM();render();}
+
+function openM(){
+  var html='';
+  for(var i=0;i<SB_data.q.length;i++){
+    var dc=ST.ans[i]===true?'ok':ST.ans[i]===false?'wrong':'pend';
+    var cur=i===ST.idx?' cur':'';
+    html+='<div class="qi '+dc+cur+'" onclick="gotoQ('+i+')">'+(i+1)+'</div>';
+  }
+  document.getElementById('mgrid').innerHTML=html;
+  document.getElementById('modal').classList.add('on');
+}
+function closeM(){document.getElementById('modal').classList.remove('on');}
+function maybeClose(e){if(e.target===document.getElementById('modal'))closeM();}
+
+function showResult(){
+  var s=SB_data;
+  var scoreOk=ST.ans.filter(function(a){return a===true;}).length;
+  var total=s.q.length;
+  var pct=Math.round((scoreOk/total)*100);
+  var msg=pct>=85?'Excelente! Domínio real. Vai arrasar na FATEC! 🚀'
+    :pct>=70?'Muito bom! Com esse desempenho você estaria dentro. Afine os erros. 💪'
+    :pct>=50?'No caminho. Foque nos tópicos abaixo nos dias que restam. 📖'
+    :'Revise com foco. Cada hora conta — você consegue! 🌟';
+  var pctClass=pct>=70?'good':pct>=50?'mid':'bad';
+
+  var byT={};
+  for(var i=0;i<total;i++){
+    var t=s.q[i].t;
+    if(!byT[t])byT[t]={ok:0,n:0};
+    byT[t].n++;
+    if(ST.ans[i]===true)byT[t].ok++;
+  }
+  var topics=Object.keys(byT).sort(function(a,b){
+    return (byT[a].ok/byT[a].n)-(byT[b].ok/byT[b].n);
+  });
+
+  var trows='';var critical=[];var medium=[];
+  topics.forEach(function(t){
+    var p=Math.round((byT[t].ok/byT[t].n)*100);
+    var fill=p>=70?'var(--green)':p>=50?'var(--warn)':'var(--red)';
+    var badge=p>=70?'<span class="tbadge ok">OK</span>'
+      :p>=50?'<span class="tbadge mid">Reforçar</span>'
+      :'<span class="tbadge bad">PRIORIDADE</span>';
+    trows+='<div class="trow"><div class="tname">'+t+'</div>'
+      +'<div class="tbar"><div class="tfill" style="width:'+p+'%;background:'+fill+'"></div></div>'
+      +'<div class="tpct" style="color:'+fill+'">'+p+'%</div>'+badge+'</div>';
+    if(p<50)critical.push(t);
+    else if(p<70)medium.push(t);
+  });
+
+  var actions='';
+  critical.forEach(function(t){
+    var d=TIPS[t]||'Revise o conteúdo e faça mais exercícios.';
+    actions+='<div class="ai"><span>🔴</span><div><strong>'+t+'</strong><br>'+d+'</div></div>';
+  });
+  medium.forEach(function(t){
+    var d=TIPS[t]||'Revise os erros e pratique mais.';
+    actions+='<div class="ai"><span>⚠️</span><div><strong>'+t+'</strong><br>'+d+'</div></div>';
+  });
+  if(!actions)actions='<div class="ai"><span>✅</span><div>Ótimo! Revisão rápida e durma bem. Você está preparado!</div></div>';
+
+  document.getElementById('res-inner').innerHTML=
+    '<div class="res-hero" style="background:'+s.bg+'">'
+    +'<div class="res-big">'+scoreOk+'<span style="font-size:26px;opacity:.5">/'+total+'</span></div>'
+    +'<div class="res-sub">'+s.ico+' '+s.name+'</div>'
+    +'<div class="res-pct '+pctClass+'">'+pct+'% de acerto</div>'
+    +'<div class="res-msg">'+msg+'</div></div>'
+    +'<div class="abox"><div class="at">📌 Plano de revisão — '+s.name+'</div>'+actions+'</div>'
+    +'<div class="byT"><div class="byT-t">📊 Desempenho por tópico (pior → melhor)</div>'+trows+'</div>'
+    +'<button class="rbtn" style="background:'+s.ac+';color:'+(ST.si===1?'#1a0a2e':'#fff')+'" onclick="startQ('+ST.si+')">Refazer este simulado</button>'
+    +'<div class="hlnk" onclick="show(\'sc-home\')">← Escolher outra matéria</div>'
+    +'<div style="text-align:center;font-size:12px;color:var(--muted);margin-top:20px">FATEC 28/06/2026 · Bora Leo! 💪</div>';
+  show('sc-result');
+}
+</script>
+</body>
+</html>
